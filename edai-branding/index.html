@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EdAI — Conference Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300&family=DM+Sans:wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #16124c;
+  --indigo:      #ac5ccc;
+  --indigo-lt:   #c990e0;
+  --indigo-pale: #f5eef9;
+  --teal:        #00b0a8;
+  --teal-dk:     #007dc5;
+  --amber:       #d97706;
+  --amber-pale:  #fffbeb;
+  --green:       #16a34a;
+  --green-pale:  #f0fdf4;
+  --red:         #dc2626;
+  --red-pale:    #fef2f2;
+  --blue:        #2563eb;
+  --blue-pale:   #eff6ff;
+  --surface:     #f6f8fa;
+  --border:      #e2e6e9;
+  --text:        #100c08;
+  --text-2:      #4b5070;
+  --text-3:      #6f8090;
+  --white:       #ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);-webkit-font-smoothing:antialiased}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+/* ── screens ── */
+.screen{display:none}
+.screen.active{display:flex;flex-direction:column}
+#s1.active{min-height:100vh;background:#fff}
+#s2.active,#s3.active,#s4.active{height:100vh;overflow:hidden;flex-direction:row}
+
+button{cursor:pointer;font-family:inherit}
+button:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* ════════════════════════════════════════════
+   S1 — ROLE SELECTION  (Sana homepage style)
+════════════════════════════════════════════ */
+.s1-wrap{flex:1;display:flex;flex-direction:column;background:#fff;min-height:100vh}
+
+.s1-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 44px;border-bottom:1px solid var(--border)
+}
+.s1-nav-logo{
+  font-family:'Lato',sans-serif;font-size:20px;font-weight:900;
+  color:var(--text);letter-spacing:-0.02em
+}
+.s1-nav-logo span{
+  background:linear-gradient(90deg,#007dc5,#00b0a8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+.s1-nav-links{display:flex;gap:28px;list-style:none}
+.s1-nav-links li a{
+  font-size:14px;color:var(--text-3);text-decoration:none;font-weight:500;transition:color .1s
+}
+.s1-nav-links li a:hover{color:var(--text)}
+.s1-sign-in{
+  font-size:14px;font-weight:600;color:var(--text);
+  background:none;border:1.5px solid var(--border);border-radius:99px;
+  padding:8px 20px;transition:background .1s
+}
+.s1-sign-in:hover{background:var(--surface)}
+
+.s1-hero{text-align:center;padding:56px 40px 44px}
+.s1-hero h1{
+  font-family:Georgia,'Times New Roman',serif;font-size:54px;font-weight:400;
+  color:var(--text);letter-spacing:-0.025em;line-height:1.15;margin-bottom:0
+}
+
+.s1-products-area{flex:1;display:flex;flex-direction:column;padding:0 44px 44px}
+.s1-products-lbl{font-size:13px;color:var(--text-3);margin-bottom:14px}
+.s1-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1}
+
+.rcard{
+  position:relative;overflow:hidden;min-height:420px;
+  border-radius:20px;padding:36px;display:flex;
+  flex-direction:column;gap:0;border:none;text-align:left;
+  transition:transform .2s
+}
+.rcard-dark{background:#0a0b10;cursor:pointer}
+.rcard-light{background:#f7f6ff;cursor:default}
+.rcard-dark:hover{transform:translateY(-3px)}
+.rcard-dark:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+.rcard-lbl{
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px
+}
+.rcard-dark .rcard-lbl{color:rgba(255,255,255,.45)}
+.rcard-light .rcard-lbl{color:var(--text-3)}
+
+.rcard-title{
+  font-family:'DM Sans',sans-serif;font-size:26px;font-weight:600;line-height:1.1;margin-bottom:8px
+}
+.rcard-dark .rcard-title{color:#fff}
+.rcard-light .rcard-title{color:var(--text)}
+
+.rcard-sub{font-size:14px;line-height:1.65;margin-bottom:0}
+.rcard-dark .rcard-sub{color:rgba(255,255,255,.5)}
+.rcard-light .rcard-sub{color:var(--text-3)}
+
+.rcard-actions{display:flex;gap:10px;margin-top:28px}
+.rcard-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 22px;border-radius:99px;
+  font-size:14px;font-weight:600;border:none;transition:all .15s
+}
+.rcard-dark .rcard-cta{background:#fff;color:#0a0b10}
+.rcard-dark .rcard-cta:hover{background:rgba(255,255,255,.88)}
+.rcard-cta-ghost{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 22px;border-radius:99px;
+  font-size:14px;font-weight:600;background:none;transition:all .15s;cursor:default
+}
+.rcard-dark .rcard-cta-ghost{border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+.rcard-light .rcard-cta-ghost{border:1.5px solid rgba(0,0,0,.18);color:var(--text-2)}
+
+.rcard-visual{
+  flex:1;display:flex;align-items:flex-end;justify-content:center;
+  margin-top:36px;overflow:hidden;border-radius:12px;min-height:120px
+}
+.rcard-dark .rcard-visual{background:linear-gradient(135deg,#00ACAA 0%,#338988 52%,#007FC4 100%)}
+.rcard-light .rcard-visual{background:linear-gradient(135deg,#16124c 0%,#29218C 58%,#FFC3A2 100%)}
+
+.rcard-vis-inner{
+  width:90%;padding:14px;background:rgba(255,255,255,.06);
+  border-radius:10px 10px 0 0;display:flex;flex-direction:column;gap:7px
+}
+.rcard-light .rcard-vis-inner{background:rgba(255,255,255,.7)}
+.rcard-vis-row{height:8px;border-radius:4px;background:rgba(255,255,255,.15)}
+.rcard-light .rcard-vis-row{background:rgba(22,18,76,.1)}
+.rcard-vis-row.w70{width:70%}
+.rcard-vis-row.w50{width:50%}
+.rcard-vis-row.w85{width:85%}
+.rcard-vis-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px}
+.rcard-vis-card{height:32px;border-radius:6px;background:rgba(255,255,255,.1)}
+.rcard-light .rcard-vis-card{background:rgba(22,18,76,.08)}
+
+/* ════════════════════════════════════════════
+   APP SHELL  (S2 · S3 · S4)
+════════════════════════════════════════════ */
+.app-sidebar{
+  width:80px;background:var(--navy);flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;
+  padding:14px 0 20px;z-index:2
+}
+.sidebar-logo{
+  width:44px;height:44px;border-radius:8px;
+  background:rgba(255,255,255,.1);display:flex;
+  align-items:center;justify-content:center;
+  margin-bottom:16px;flex-shrink:0
+}
+.sidebar-nav{flex:1;display:flex;flex-direction:column;gap:2px;width:100%;padding:0 10px}
+.sidebar-btn{
+  width:100%;height:48px;display:flex;align-items:center;
+  justify-content:center;border-radius:8px;background:none;border:none;
+  color:rgba(255,255,255,.35);transition:all .1s
+}
+.sidebar-btn:hover{color:rgba(255,255,255,.72);background:rgba(255,255,255,.05)}
+.sidebar-btn.on{background:rgba(255,255,255,.12);color:#fff}
+.sidebar-btn:focus-visible{outline:2px solid rgba(255,255,255,.4);outline-offset:-2px}
+.sidebar-fab{
+  width:40px;height:40px;background:var(--indigo);border:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  flex-shrink:0;transition:background .1s
+}
+.sidebar-fab:hover{background:var(--indigo-lt)}
+.sidebar-fab:focus-visible{outline:2px solid var(--indigo-lt);outline-offset:2px}
+
+.app-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+.app-header{
+  background:var(--navy);height:52px;display:flex;
+  align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;gap:16px
+}
+.hdr-greeting{
+  font-family:'Lato',sans-serif;font-size:20px;font-weight:900;
+  color:#fff;white-space:nowrap;flex-shrink:0
+}
+.hdr-right{display:flex;align-items:center;gap:18px}
+.hdr-search{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border-radius:6px;
+  padding:5px 12px;width:160px
+}
+.hdr-search span{font-size:13px;color:rgba(255,255,255,.6);flex:1}
+.hdr-avatar{
+  width:30px;height:30px;border-radius:50%;background:var(--indigo);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Lato',sans-serif;font-size:11px;font-weight:700;flex-shrink:0
+}
+.hdr-school{
+  display:flex;align-items:center;gap:6px;background:var(--indigo);
+  border:none;border-radius:20px;padding:5px 16px;
+  color:#fff;font-family:'Lato',sans-serif;font-size:14px;font-weight:700;white-space:nowrap
+}
+.hdr-school:hover{background:var(--indigo-lt)}
+.hdr-school:focus-visible{outline:2px solid var(--indigo-lt);outline-offset:2px}
+
+/* ════════════════════════════════════════════
+   S2 — STUDENT SELECTOR
+════════════════════════════════════════════ */
+.s2-area{flex:1;position:relative;background:var(--surface);overflow:hidden}
+
+/* loading */
+.s2-load{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;
+  background:var(--surface);z-index:5;transition:opacity .5s
+}
+.s2-load.out{opacity:0;pointer-events:none}
+
+.load-text{
+  font-family:'Lato',sans-serif;font-size:70px;font-weight:900;
+  letter-spacing:-.025em;line-height:1;
+  background:linear-gradient(90deg,#007dc5 0%,#00b0a8 22%,#00e0d8 44%,#fff 50%,#00d4cc 56%,#00b0a8 78%,#007dc5 100%);
+  background-size:300% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer 1.8s linear infinite
+}
+@keyframes shimmer{0%{background-position:100% center}100%{background-position:-100% center}}
+
+.load-status{font-family:'Lato',sans-serif;font-size:14px;color:var(--text-3)}
+.load-dots::after{content:'';animation:dots 1.6s steps(4,end) infinite}
+@keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+
+/* grid */
+.s2-grid{
+  position:absolute;inset:0;overflow-y:auto;
+  padding:28px 32px;opacity:0;pointer-events:none;transition:opacity .5s
+}
+.s2-grid.show{opacity:1;pointer-events:auto}
+
+/* suggested section */
+.s2-suggested{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:24px 24px 20px;margin-bottom:28px;
+  overflow:hidden;max-height:300px;
+  transition:opacity .4s ease,max-height .55s .15s ease,padding .55s .15s ease,margin-bottom .55s .15s ease
+}
+.s2-suggested.out{opacity:0;max-height:0;padding-top:0;padding-bottom:0;margin-bottom:0}
+.s2-sug-title{font-family:'Lato',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px}
+.s2-sug-sub{font-size:13px;color:var(--text-3);line-height:1.65;margin-bottom:18px;max-width:520px}
+.s2-sug-box{
+  background:var(--surface);border-radius:10px;
+  padding:28px 24px;display:flex;align-items:center;justify-content:center;gap:14px
+}
+.s2-sug-box{position:relative;min-height:110px}
+.sug-loading-wrap{display:flex;align-items:center;justify-content:center;gap:14px;transition:opacity .4s}
+.sug-summary-wrap{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .5s;pointer-events:none;padding:16px
+}
+.s2-sug-box.loaded .sug-loading-wrap{opacity:0;pointer-events:none}
+.s2-sug-box.loaded .sug-summary-wrap{opacity:1;pointer-events:auto}
+
+.sug-dots{display:grid;grid-template-columns:repeat(4,7px);gap:3px;flex-shrink:0}
+.sug-dot{width:7px;height:7px;border-radius:50%;background:#d0d5da}
+@keyframes dot-pulse{0%,60%,100%{transform:scale(1);opacity:.3}30%{transform:scale(1.55);opacity:1}}
+.sug-dot:nth-child(1){animation:dot-pulse 1.4s ease-in-out infinite 0s}
+.sug-dot:nth-child(2){animation:dot-pulse 1.4s ease-in-out infinite .16s}
+.sug-dot:nth-child(3){animation:dot-pulse 1.4s ease-in-out infinite .32s}
+.sug-dot:nth-child(4){animation:dot-pulse 1.4s ease-in-out infinite .48s}
+.sug-dot:nth-child(5){animation:dot-pulse 1.4s ease-in-out infinite .64s}
+.sug-dot:nth-child(6){animation:dot-pulse 1.4s ease-in-out infinite .80s}
+.sug-dot:nth-child(7){animation:dot-pulse 1.4s ease-in-out infinite .96s}
+.sug-dot:nth-child(8){animation:dot-pulse 1.4s ease-in-out infinite 1.12s}
+.sug-text{font-size:14px;color:#b0b8c1}
+
+.sug-summary-text{font-size:17px;font-weight:500;color:var(--text-2);white-space:nowrap;display:flex;align-items:center;gap:8px}
+.sug-n-amber{font-family:'Lato',sans-serif;font-size:32px;font-weight:700;color:var(--amber)}
+.sug-n-red{font-family:'Lato',sans-serif;font-size:32px;font-weight:700;color:var(--red)}
+.sug-n-strong{font-family:'Lato',sans-serif;font-weight:900;color:var(--text)}
+
+/* browse section */
+.s2-browse-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.s2-pg-title{font-family:'Lato',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin:0}
+.s2-search{
+  display:flex;align-items:center;gap:8px;padding:8px 16px;
+  background:#fff;border:1.5px solid var(--border);border-radius:99px;
+  font-size:13px;color:var(--text-3);min-width:190px
+}
+.s2-search svg{flex-shrink:0}
+
+.s2-section-lbl{font-size:13px;color:var(--text-3);margin-bottom:12px;font-weight:500}
+.s2-meta{font-size:12px;color:var(--text-3);margin-bottom:16px;margin-top:-6px}
+
+.stu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+.stu-card{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:20px 20px 18px;display:flex;flex-direction:column;
+  align-items:flex-start;text-align:left;min-height:215px;
+  cursor:pointer;transition:all .15s;font-family:inherit
+}
+.stu-card:hover{border-color:var(--indigo-lt);box-shadow:0 4px 20px rgba(172,92,204,.1);transform:translateY(-2px)}
+.stu-card:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.stu-card-disabled{cursor:default;opacity:.7}
+.stu-card-disabled:hover{transform:none;box-shadow:none;border-color:var(--border)}
+
+.sc-av{
+  width:40px;height:40px;border-radius:50%;border:2px solid var(--border);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  font-family:'Lato',sans-serif;font-size:14px;font-weight:700;color:var(--text-2);
+  margin-bottom:46px;flex-shrink:0
+}
+.sc-av.amber{background:var(--amber-pale);border-color:var(--amber);color:var(--amber)}
+.sc-av.red{background:var(--red-pale);border-color:var(--red);color:var(--red)}
+.sc-name{font-family:'Lato',sans-serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:5px}
+.sc-grade{font-size:13px;color:var(--text-3);line-height:1.5}
+.sc-tag-row{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:14px;flex-wrap:wrap}
+.sc-gpa-pill{
+  display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;
+  font-size:12px;font-weight:500;background:var(--surface);border:1px solid var(--border);color:var(--text-3)
+}
+.sc-badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:500}
+.sc-amber{background:var(--amber-pale);color:var(--amber)}
+.sc-red{background:var(--red-pale);color:var(--red)}
+
+/* ════════════════════════════════════════════
+   S3 — ACHIEVEMENT BADGE CARDS (Sana Learn style)
+════════════════════════════════════════════ */
+.badge-cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+
+.bcard{
+  background:#fff;border:1px solid var(--border);border-radius:16px;
+  padding:24px;display:flex;align-items:center;gap:22px
+}
+
+.bcard-hex{
+  width:110px;height:110px;flex-shrink:0;
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px
+}
+.bcard-dark .bcard-hex{background:linear-gradient(145deg,#4a4a5a,#1e1e2e)}
+.bcard-amber .bcard-hex{background:linear-gradient(145deg,#e8a96b,#b8581e)}
+.bcard-blue .bcard-hex{background:linear-gradient(145deg,#5b9cf6,#1d56c8)}
+
+.bcard-hex-icon{color:rgba(255,255,255,.85)}
+.bcard-hex-lbl{
+  font-size:7px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:rgba(255,255,255,.6);text-align:center;line-height:1.2
+}
+
+.bcard-info{display:flex;flex-direction:column;gap:5px}
+.bcard-level{font-family:'Lato',sans-serif;font-size:19px;font-weight:700;color:var(--text);line-height:1.2}
+.bcard-date{font-size:13px;color:var(--text-3)}
+
+.about-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:0}
+.about-lbl{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+.about-body{font-size:13px;color:var(--text-3);line-height:1.7}
+
+.s3-section-hdr{font-size:14px;font-weight:600;color:var(--text-2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.s3-section-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* know-list items (new S3 style) */
+.know-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.know-item{display:flex;align-items:flex-start;gap:10px}
+.ki-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ki-red{background:var(--red)}
+.ki-amber{background:var(--amber)}
+.ki-green{background:var(--green)}
+.ki-text{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:2px}
+.ki-src{font-size:11px;color:var(--text-3)}
+
+/* mod-card (new S3 style, replaces mod-btn) */
+.module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mod-card{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:14px;display:flex;align-items:flex-start;gap:12px
+}
+.mod-icon{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center
+}
+.mod-body{display:flex;flex-direction:column;gap:3px}
+.mod-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.mod-sub{font-size:12px;color:var(--text-3);line-height:1.5}
+
+/* ════════════════════════════════════════════
+   S3 / S4 — STUDENT DETAIL
+════════════════════════════════════════════ */
+.detail-area{flex:1;display:flex;overflow:hidden}
+.detail-left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* page header */
+.s3-phead{
+  background:#fff;padding:16px 24px 0;
+  border-bottom:1px solid var(--border);flex-shrink:0
+}
+.breadcrumb{display:flex;align-items:center;gap:6px;list-style:none;margin-bottom:10px}
+.breadcrumb li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)}
+.breadcrumb li:not(:last-child)::after{content:'>';color:var(--border);font-size:10px}
+.breadcrumb button{background:none;border:none;font-size:12px;color:var(--text-3);padding:0}
+.breadcrumb button:hover{color:var(--indigo)}
+.breadcrumb button:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+
+.s3-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.s3-title{font-family:'Lato',sans-serif;font-size:28px;font-weight:900;color:var(--text)}
+.s3-title-acts{display:flex;align-items:center;gap:10px}
+
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
+.b-amber{background:var(--amber-pale);color:var(--amber)}
+.b-red{background:var(--red-pale);color:var(--red)}
+.b-navy{background:rgba(22,18,76,.08);color:var(--navy)}
+
+.s3-meta{font-size:13px;color:var(--text-3);margin-bottom:14px}
+
+.btn-gen{
+  display:flex;align-items:center;gap:6px;padding:8px 16px;
+  background:var(--indigo);color:#fff;border:none;border-radius:8px;
+  font-family:'Lato',sans-serif;font-size:13px;font-weight:700;transition:background .1s
+}
+.btn-gen:hover{background:var(--indigo-lt)}
+.btn-gen:focus-visible{outline:2px solid var(--indigo-lt);outline-offset:2px}
+
+/* tabs */
+.tab-bar{
+  display:flex;padding:0 24px;background:#fff;
+  border-bottom:1px solid var(--border);flex-shrink:0
+}
+.tab{
+  display:flex;align-items:center;gap:6px;padding:12px 14px;
+  background:none;border:none;border-bottom:2px solid transparent;
+  font-size:13px;font-weight:500;color:var(--text-3);
+  margin-bottom:-1px;transition:all .12s;white-space:nowrap
+}
+.tab:hover{color:var(--text-2)}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
+.tab:focus-visible{outline:2px solid var(--indigo);outline-offset:-2px}
+
+/* scrollable main */
+.detail-scroll{
+  flex:1;overflow-y:auto;padding:22px;
+  display:flex;flex-direction:column;gap:18px;background:var(--surface)
+}
+
+/* metrics */
+.snap-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.snap-lbl{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text-2)}
+.snap-date{font-size:12px;color:var(--text-3)}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mc{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+.mc.hl{border-color:var(--indigo);box-shadow:0 0 0 2px rgba(172,92,204,.1)}
+.mc-lbl{font-size:12px;color:var(--text-3);margin-bottom:8px}
+.mc-val{font-family:'Lato',sans-serif;font-size:30px;font-weight:900;color:var(--text);letter-spacing:-.02em;line-height:1}
+.mc-trend{display:flex;align-items:center;gap:4px;font-size:11px;margin-top:4px;color:var(--text-3)}
+.t-dn{color:var(--red)}.t-up{color:var(--amber)}
+
+/* know-now */
+.know-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.know-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.know-ttl{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--text)}
+.know-why{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-3);background:none;border:none}
+.know-why:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+.kitem{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:8px}
+.kitem:last-child{margin-bottom:0}
+.kdot{width:6px;height:6px;border-radius:50%;background:var(--navy);flex-shrink:0;margin-top:7px}
+
+/* modules */
+.mod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mod-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding:16px 8px;background:#fff;border:1px solid var(--border);
+  border-radius:10px;font-size:12px;color:var(--text-2);font-weight:500;
+  cursor:pointer;transition:all .12s
+}
+.mod-btn:hover{border-color:var(--indigo-lt);background:var(--indigo-pale);color:var(--indigo)}
+.mod-btn:hover svg{stroke:var(--indigo)}
+.mod-btn:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* plan card */
+.plan-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.plan-hdr{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.plan-ttl{font-family:'Lato',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.agoal{margin:14px 16px;padding:14px;border:1.5px solid var(--indigo-lt);border-radius:8px;background:var(--indigo-pale)}
+.agoal-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo);margin-bottom:5px}
+.agoal-ttl{font-family:'Lato',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.agoal-meta{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3)}
+.aitems{padding:0 16px 4px}
+.aitem{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.aitem:last-child{border-bottom:none}
+.achk{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;cursor:pointer;appearance:none;background:#fff}
+.achk:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+.atxt{font-size:13px;color:var(--text);flex:1}
+.otag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+.o-stu{background:var(--blue-pale);color:var(--blue)}
+.o-par{background:var(--green-pale);color:var(--green)}
+.o-tea{background:var(--indigo-pale);color:var(--indigo)}
+.adate{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);white-space:nowrap}
+.plan-ftr{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:16px}
+.plan-lnk{background:none;border:none;font-size:12px;color:var(--indigo);font-weight:500;cursor:pointer;font-family:inherit}
+.plan-lnk:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* roadmap */
+.road-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.road-hdr{background:var(--navy);padding:16px 20px}
+.road-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.road-name{font-family:'Lato',sans-serif;font-size:18px;font-weight:700;color:#fff}
+.road-grade{font-size:13px;color:rgba(255,255,255,.55)}
+.road-stats{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.road-stat{display:flex;align-items:center;gap:5px;font-size:13px;color:#fff}
+.road-stat strong{font-family:'Lato',sans-serif;font-weight:700}
+.road-sb{display:inline-flex;padding:2px 8px;background:rgba(255,255,255,.15);border-radius:5px;font-size:11px;color:rgba(255,255,255,.85);font-weight:500}
+.road-body{padding:20px}
+.road-gen{font-size:12px;color:var(--text-3);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.road-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px}
+.road-col-ttl{font-family:'Lato',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px}
+.road-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text-2);line-height:1.5;margin-bottom:7px}
+.dg{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
+.di{width:8px;height:8px;border-radius:50%;background:var(--indigo);flex-shrink:0;margin-top:5px}
+.road-sec-ttl{font-family:'Lato',sans-serif;font-size:14px;font-weight:700;color:var(--text);padding-top:16px;border-top:1px solid var(--border);margin-bottom:10px}
+.sgoal{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--surface);border-radius:8px;margin-bottom:8px;font-size:13px;color:var(--text-2);line-height:1.5}
+.sgoal-n{font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--indigo);background:var(--indigo-pale);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ════════════════════════════════════════════
+   ASK EDAI PANEL  (Sana-style agent panel)
+════════════════════════════════════════════ */
+.aep{
+  width:280px;flex-shrink:0;background:#fafaf9;
+  border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden
+}
+.aep-hdr{padding:18px 18px 0;flex-shrink:0}
+.aep-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.aep-title{font-family:'Lato',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.aep-x{background:none;border:none;color:var(--text-3);width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.aep-x:hover{background:var(--border);color:var(--text)}
+.aep-x:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+
+/* Tab bar */
+.aep-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 18px;flex-shrink:0}
+.aep-tab{
+  padding:8px 0;margin-right:20px;font-size:13px;font-weight:600;color:var(--text-3);
+  background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;
+  font-family:inherit;transition:color .15s,border-color .15s
+}
+.aep-tab.on{color:var(--text);border-bottom-color:var(--text)}
+.aep-tab:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+.aep-body{flex:1;overflow-y:auto;padding:20px 18px 0;display:flex;flex-direction:column;gap:12px}
+
+/* Suggestion cards */
+.aep-sug{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:14px 14px 12px;cursor:pointer;text-align:left;width:100%;
+  font-family:inherit;transition:border-color .15s,box-shadow .15s
+}
+.aep-sug:hover{border-color:#c5c2e8;box-shadow:0 2px 8px rgba(172,92,204,.08)}
+.aep-sug:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.aep-sug-icon{width:28px;height:28px;border-radius:7px;background:var(--indigo-pale);display:flex;align-items:center;justify-content:center;margin-bottom:9px;color:var(--indigo)}
+.aep-sug-ttl{font-family:'Lato',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.aep-sug-desc{font-size:11px;color:var(--text-3);line-height:1.55}
+
+/* Footer input */
+.aep-foot{padding:14px 18px 16px;border-top:1px solid var(--border);flex-shrink:0}
+.aep-input-wrap{
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 12px 8px;margin-bottom:10px;
+  transition:border-color .15s
+}
+.aep-input-wrap:focus-within{border-color:var(--indigo-lt)}
+.aep-hint{font-size:13px;color:var(--text-3);display:block;margin-bottom:8px;line-height:1}
+.aep-pacts{display:flex;align-items:center;justify-content:space-between}
+.aep-actions{display:flex;gap:5px;flex-wrap:wrap}
+.aep-act{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 9px;
+  border-radius:99px;font-size:10px;font-weight:600;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-2);cursor:pointer;font-family:inherit;transition:all .1s
+}
+.aep-act:hover{background:var(--indigo-pale);border-color:var(--indigo-lt);color:var(--indigo)}
+.aep-act:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+.aep-send{
+  width:26px;height:26px;background:var(--indigo);border:none;border-radius:7px;
+  color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  flex-shrink:0;padding:0;transition:opacity .15s
+}
+.aep-send:hover{opacity:.85}
+.aep-send svg{transform:rotate(45deg)}
+.aep-send:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.aep-disc{font-size:9px;color:var(--text-3);text-align:center;line-height:1.5}
+
+/* Response view */
+.aep-resp-wrap{display:none;flex-direction:column;flex:1;overflow:hidden}
+.aep-resp-wrap.active{display:flex}
+.aep-resp-back{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;color:var(--text-3);
+  background:none;border:none;cursor:pointer;font-family:inherit;
+  padding:16px 18px 0;flex-shrink:0;transition:color .1s
+}
+.aep-resp-back:hover{color:var(--text)}
+.aep-resp-back:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+.aep-resp-back svg{flex-shrink:0}
+
+/* Typing indicator */
+.aep-typing{display:flex;align-items:center;gap:5px;padding:20px 18px}
+.aep-typing-label{font-size:12px;color:var(--text-3)}
+.aep-typing-dots{display:flex;gap:4px}
+.aep-typing-dot{width:5px;height:5px;border-radius:50%;background:var(--indigo);opacity:.3;animation:aep-dot-pulse 1.2s ease-in-out infinite}
+.aep-typing-dot:nth-child(2){animation-delay:.2s}
+.aep-typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes aep-dot-pulse{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.3)}}
+
+/* Response content */
+.aep-resp-content{
+  flex:1;overflow-y:auto;padding:0 18px 16px;
+  opacity:0;transition:opacity .4s ease
+}
+.aep-resp-content.visible{opacity:1}
+.aep-resp-meta{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;color:var(--text-3);margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--border)
+}
+.aep-resp-meta-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--indigo-pale);color:var(--indigo);
+  border-radius:99px;padding:2px 7px;font-size:9px;font-weight:700;font-family:'Lato',sans-serif
+}
+.aep-resp-section{margin-bottom:14px}
+.aep-resp-section-ttl{
+  font-family:'Lato',sans-serif;font-size:11px;font-weight:700;
+  color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:6px
+}
+.aep-resp-item{
+  display:flex;align-items:flex-start;gap:7px;
+  font-size:12px;color:var(--text-2);line-height:1.55;margin-bottom:5px
+}
+.aep-resp-dot{width:5px;height:5px;border-radius:50%;background:var(--indigo);flex-shrink:0;margin-top:5px;opacity:.5}
+.aep-resp-item strong{color:var(--text);font-weight:700}
+.aep-resp-time{font-size:10px;color:var(--text-3);margin-left:auto;flex-shrink:0}
+
+/* Response footer actions */
+.aep-resp-actions{
+  display:flex;gap:7px;padding:10px 18px 14px;border-top:1px solid var(--border);flex-shrink:0
+}
+.aep-resp-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:7px 10px;border-radius:8px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all .1s
+}
+.aep-resp-btn.copy{background:var(--surface);border:1px solid var(--border);color:var(--text-2)}
+.aep-resp-btn.copy:hover{border-color:var(--indigo-lt);color:var(--indigo)}
+.aep-resp-btn.regen{background:var(--indigo);border:1px solid var(--indigo);color:#fff}
+.aep-resp-btn.regen:hover{opacity:.85}
+.aep-resp-btn:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-3)}
+</style>
+</head>
+<body>
+
+<!-- ══ S1 ════════════════════════════════════════════════════════ -->
+<div id="s1" class="screen active">
+<div class="s1-wrap">
+
+  <nav class="s1-nav">
+    <div class="s1-nav-logo">Ed<span>AI</span></div>
+    <ul class="s1-nav-links">
+      <li><a href="#">For Teachers</a></li>
+      <li><a href="#">For Schools</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <button class="s1-sign-in">Sign in</button>
+  </nav>
+
+  <div class="s1-hero">
+    <h1>Intelligence for every classroom.</h1>
+  </div>
+
+  <div class="s1-products-area">
+<div class="s1-grid" role="group" aria-label="Choose your role">
+
+      <!-- Teacher -->
+      <button class="rcard rcard-dark" onclick="go('s2')" aria-label="Continue as a teacher">
+        <span class="rcard-lbl">For Teachers</span>
+        <span class="rcard-title">EdAI Strategist</span>
+        <span class="rcard-sub">View student performance data and generate personalised conference talking points — powered by EdAI.</span>
+        <div class="rcard-actions">
+          <span class="rcard-cta" aria-hidden="true">Get started</span>
+          <span class="rcard-cta-ghost" aria-hidden="true">Learn more</span>
+        </div>
+        <div class="rcard-visual" aria-hidden="true">
+          <div class="rcard-vis-inner">
+            <div class="rcard-vis-row w85"></div>
+            <div class="rcard-vis-row w70"></div>
+            <div class="rcard-vis-grid">
+              <div class="rcard-vis-card"></div>
+              <div class="rcard-vis-card"></div>
+              <div class="rcard-vis-card"></div>
+            </div>
+          </div>
+        </div>
+      </button>
+
+      <!-- Parent -->
+      <div class="rcard rcard-light" role="region" aria-label="Parent or Guardian view — coming soon">
+        <span class="rcard-lbl">For Parents</span>
+        <span class="rcard-title">Family Connect</span>
+        <span class="rcard-sub">Stay informed on your child's goals and prepare meaningful questions for upcoming teacher conferences.</span>
+        <div class="rcard-actions">
+          <span class="rcard-cta-ghost" aria-hidden="true">Coming soon</span>
+        </div>
+        <div class="rcard-visual" aria-hidden="true">
+          <div class="rcard-vis-inner">
+            <div class="rcard-vis-row w50"></div>
+            <div class="rcard-vis-row w70"></div>
+            <div class="rcard-vis-grid">
+              <div class="rcard-vis-card"></div>
+              <div class="rcard-vis-card"></div>
+              <div class="rcard-vis-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ S2 ════════════════════════════════════════════════════════ -->
+<div id="s2" class="screen">
+
+  <!-- sidebar -->
+  <nav class="app-sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo" aria-hidden="true">
+      <svg viewBox="0 0 36 36" width="28" height="28" fill="none">
+        <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <path d="M11 10 L11 26 M11 18 L18 18 M11 10 L22 10 M11 26 L22 26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-btn" aria-label="Dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <button class="sidebar-btn on" aria-label="Students" aria-current="page">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </button>
+      <button class="sidebar-btn" aria-label="Analytics">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </button>
+      <button class="sidebar-btn" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="sidebar-btn" aria-label="Academic programs">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </button>
+    </div>
+    <button class="sidebar-fab" aria-label="New action">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </nav>
+
+  <!-- main -->
+  <div class="app-main">
+    <header class="app-header">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button onclick="go('s1')" style="background:none;border:none;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:5px;font-size:13px;padding:4px 0;transition:color .1s" aria-label="Back to role selection">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="hdr-greeting">Welcome, Lin!</span>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-search" role="search">
+          <span>Search</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="hdr-avatar" aria-label="User: Lin Rivera">LR</div>
+        <button class="hdr-school" aria-label="Current school: Lincoln Middle School">
+          Lincoln Middle School
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="s2-area">
+
+      <!-- loading state -->
+      <div id="s2-load" class="s2-load" aria-live="polite" aria-label="Loading student data">
+        <span class="load-text">EdAI</span>
+        <p class="load-status">Gathering your student list<span class="load-dots" aria-hidden="true"></span></p>
+      </div>
+
+      <!-- student grid -->
+      <div id="s2-grid" class="s2-grid" role="main">
+
+        <!-- suggested section -->
+        <div class="s2-suggested">
+          <p class="s2-sug-title">EdAI Suggestions</p>
+          <p class="s2-sug-sub">EdAI will highlight students who may need attention based on recent performance and engagement data. Suggestions update daily as EdAI learns your class.</p>
+          <div class="s2-sug-box" id="sug-box" aria-live="polite">
+            <div class="sug-loading-wrap" aria-label="EdAI is analyzing student data">
+              <div class="sug-dots" aria-hidden="true">
+                <span class="sug-dot"></span><span class="sug-dot"></span><span class="sug-dot"></span><span class="sug-dot"></span>
+                <span class="sug-dot"></span><span class="sug-dot"></span><span class="sug-dot"></span><span class="sug-dot"></span>
+              </div>
+              <span class="sug-text">Analyzing student performance data...</span>
+            </div>
+            <div class="sug-summary-wrap" aria-hidden="true">
+              <p class="sug-summary-text">
+                You have <span class="sug-n-amber">2</span> students needing attention &nbsp;·&nbsp; <span class="sug-n-red">1</span> on watch &nbsp;·&nbsp; Average GPA <strong class="sug-n-strong">2.7</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="s2-browse-row">
+          <h1 class="s2-pg-title">Students</h1>
+          <div class="s2-search" role="search" aria-label="Search students">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search students
+          </div>
+        </div>
+
+        <p class="s2-section-lbl">5th Period — Room 214</p>
+        <p class="s2-meta">4 students · Last synced Feb 26, 2026</p>
+
+        <div class="stu-grid" role="list">
+
+          <button class="stu-card" onclick="go('s3')" aria-label="Open Amara Johnson's profile" role="listitem">
+            <div class="sc-av amber" aria-hidden="true">AJ</div>
+            <span class="sc-name">Amara Johnson</span>
+            <span class="sc-grade">8th Grade · Room 214</span>
+            <div class="sc-tag-row">
+              <span class="sc-gpa-pill" aria-label="GPA 2.8">GPA 2.8</span>
+              <span class="sc-badge sc-amber">Needs attention</span>
+            </div>
+          </button>
+
+          <button class="stu-card stu-card-disabled" aria-label="Liam Torres" aria-disabled="true" role="listitem">
+            <div class="sc-av" aria-hidden="true">LT</div>
+            <span class="sc-name">Liam Torres</span>
+            <span class="sc-grade">8th Grade · Room 214</span>
+            <div class="sc-tag-row">
+              <span class="sc-gpa-pill" aria-label="GPA 3.6">GPA 3.6</span>
+            </div>
+          </button>
+
+          <button class="stu-card stu-card-disabled" aria-label="Sofia Patel" aria-disabled="true" role="listitem">
+            <div class="sc-av red" aria-hidden="true">SP</div>
+            <span class="sc-name">Sofia Patel</span>
+            <span class="sc-grade">8th Grade · Room 214</span>
+            <div class="sc-tag-row">
+              <span class="sc-gpa-pill" aria-label="GPA 2.1">GPA 2.1</span>
+              <span class="sc-badge sc-red">On watch</span>
+            </div>
+          </button>
+
+          <button class="stu-card stu-card-disabled" aria-label="Marcus Williams" aria-disabled="true" role="listitem">
+            <div class="sc-av amber" aria-hidden="true">MW</div>
+            <span class="sc-name">Marcus Williams</span>
+            <span class="sc-grade">8th Grade · Room 214</span>
+            <div class="sc-tag-row">
+              <span class="sc-gpa-pill" aria-label="GPA 2.5">GPA 2.5</span>
+              <span class="sc-badge sc-amber">Needs attention</span>
+            </div>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3 ════════════════════════════════════════════════════════ -->
+<div id="s3" class="screen">
+
+  <!-- sidebar (same) -->
+  <nav class="app-sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo" aria-hidden="true">
+      <svg viewBox="0 0 36 36" width="28" height="28" fill="none"><circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/><path d="M11 10 L11 26 M11 18 L18 18 M11 10 L22 10 M11 26 L22 26" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-btn" aria-label="Dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+      <button class="sidebar-btn on" aria-label="Students" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+      <button class="sidebar-btn" aria-label="Analytics"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
+      <button class="sidebar-btn" aria-label="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="sidebar-btn" aria-label="Academic programs"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></button>
+    </div>
+    <button class="sidebar-fab" aria-label="New action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </nav>
+
+  <div class="app-main">
+    <header class="app-header">
+      <span class="hdr-greeting">Welcome, Lin!</span>
+      <div class="hdr-right">
+        <div class="hdr-search" role="search"><span>Search</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="hdr-avatar" aria-label="User: Lin Rivera">LR</div>
+        <button class="hdr-school" aria-label="Current school: Innovare">Innovare <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </header>
+
+    <div class="detail-area">
+      <div class="detail-left">
+
+        <!-- page header -->
+        <div class="s3-phead">
+          <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb">
+              <li><button onclick="go('s2')" aria-label="Back to Students list">Students</button></li>
+              <li aria-current="page">Amara Johnson</li>
+            </ol>
+          </nav>
+          <div class="s3-title-row">
+            <div style="display:flex;align-items:center;gap:10px">
+              <h1 class="s3-title">Amara Johnson</h1>
+              <span class="badge b-amber">Needs attention</span>
+            </div>
+            <div class="s3-title-acts">
+              <button class="btn-gen" onclick="go('s4')" aria-label="Generate conference report">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Generate Report
+              </button>
+            </div>
+          </div>
+          <p class="s3-meta">8th Grade &nbsp;·&nbsp; Room 214 &nbsp;·&nbsp; STU-20487</p>
+        </div>
+
+        <!-- tabs -->
+        <nav class="tab-bar" aria-label="Student sections">
+          <button class="tab on" aria-selected="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Prepare
+          </button>
+          <button class="tab" aria-selected="false">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            In Conference
+          </button>
+          <button class="tab" aria-selected="false">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Message
+          </button>
+          <button class="tab" aria-selected="false" onclick="go('s4')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Generate Report
+          </button>
+        </nav>
+
+        <!-- scrollable content -->
+        <main class="detail-scroll" id="s3-main" aria-label="Student detail">
+
+          <!-- achievement badge cards -->
+          <section aria-label="Academic performance levels">
+            <div class="badge-cards-row">
+
+              <div class="bcard bcard-dark">
+                <div class="bcard-hex" aria-hidden="true">
+                  <svg class="bcard-hex-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span class="bcard-hex-lbl">Reading</span>
+                </div>
+                <div class="bcard-info">
+                  <span class="bcard-level">Below Grade Level</span>
+                  <span class="bcard-date">Assessed Feb 26, 2026</span>
+                </div>
+              </div>
+
+              <div class="bcard bcard-amber">
+                <div class="bcard-hex" aria-hidden="true">
+                  <svg class="bcard-hex-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  <span class="bcard-hex-lbl">Mathematics</span>
+                </div>
+                <div class="bcard-info">
+                  <span class="bcard-level">Approaching Grade</span>
+                  <span class="bcard-date">Assessed Feb 26, 2026</span>
+                </div>
+              </div>
+
+              <div class="bcard bcard-blue">
+                <div class="bcard-hex" aria-hidden="true">
+                  <svg class="bcard-hex-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="bcard-hex-lbl">Attendance</span>
+                </div>
+                <div class="bcard-info">
+                  <span class="bcard-level">On Track · 92%</span>
+                  <span class="bcard-date">Spring 2026</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- about this student -->
+          <div class="about-card">
+            <p class="about-lbl">About this student</p>
+            <p class="about-body">Amara is an 8th grader in Room 214 enrolled across 4 assessed subject areas. She is showing progress in mathematics but is currently reading below grade level. Attendance has been consistent this semester. EdAI flagged her for conference prep based on her reading performance trend over the last 60 days.</p>
+          </div>
+
+          <!-- conference prep section -->
+          <div>
+            <p class="s3-section-hdr">Conference preparation</p>
+            <div class="know-card">
+              <div class="know-hdr">
+                <div class="know-ttl">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  What you should know now
+                </div>
+                <button class="know-why" aria-label="Why is this shown?">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Why this?
+                </button>
+              </div>
+              <ul class="know-list">
+                <li class="know-item">
+                  <span class="ki-dot ki-red" aria-hidden="true"></span>
+                  <div>
+                    <p class="ki-text">Reading score dropped 0.4 points since last assessment — largest decline in this class.</p>
+                    <p class="ki-src">Source: Benchmark assessment · Feb 2026</p>
+                  </div>
+                </li>
+                <li class="know-item">
+                  <span class="ki-dot ki-amber" aria-hidden="true"></span>
+                  <div>
+                    <p class="ki-text">3 missing assignments in the last 14 days, up from 0 in the prior period.</p>
+                    <p class="ki-src">Source: Gradebook · Feb 2026</p>
+                  </div>
+                </li>
+                <li class="know-item">
+                  <span class="ki-dot ki-green" aria-hidden="true"></span>
+                  <div>
+                    <p class="ki-text">Math improved from 2.4 → 2.8 GPA over the last two grading periods.</p>
+                    <p class="ki-src">Source: Transcript · Spring 2026</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- talking points section -->
+          <div>
+            <p class="s3-section-hdr">Suggested talking points</p>
+            <div class="module-grid">
+              <div class="mod-card">
+                <div class="mod-icon" style="background:var(--red-pale)" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div class="mod-body">
+                  <p class="mod-title">Reading intervention</p>
+                  <p class="mod-sub">Discuss her reading support plan and whether a Tier 2 intervention is appropriate.</p>
+                </div>
+              </div>
+              <div class="mod-card">
+                <div class="mod-icon" style="background:var(--amber-pale)" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="mod-body">
+                  <p class="mod-title">Missing assignments</p>
+                  <p class="mod-sub">Explore barriers to assignment completion — home environment, workload balance.</p>
+                </div>
+              </div>
+              <div class="mod-card">
+                <div class="mod-icon" style="background:var(--green-pale)" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                </div>
+                <div class="mod-body">
+                  <p class="mod-title">Celebrate math progress</p>
+                  <p class="mod-sub">Acknowledge the GPA improvement — positive reinforcement for Amara and her parent.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+      <!-- Ask EdAI panel -->
+      <aside class="aep" aria-label="Ask EdAI">
+        <div class="aep-hdr">
+          <div class="aep-hdr-row">
+            <span class="aep-title">Ask EdAI</span>
+            <button class="aep-x" aria-label="Close Ask EdAI panel">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="aep-tabs" role="tablist">
+          <button class="aep-tab on" role="tab" aria-selected="true">Actions</button>
+          <button class="aep-tab" role="tab" aria-selected="false">Research</button>
+          <button class="aep-tab" role="tab" aria-selected="false">History</button>
+        </div>
+
+        <div class="aep-body" id="s3-aep-sugs">
+          <button class="aep-sug" id="s3-sug-agenda" aria-label="Draft parent meeting agenda for Amara Johnson">
+            <div class="aep-sug-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="aep-sug-ttl">Draft parent meeting agenda</div>
+            <div class="aep-sug-desc">Generate a structured agenda and talking points for Amara Johnson's upcoming parent conference.</div>
+          </button>
+
+          <button class="aep-sug" aria-label="Summarise academic progress for parent conversation">
+            <div class="aep-sug-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="aep-sug-ttl">Summarise academic progress</div>
+            <div class="aep-sug-desc">Translate grades, attendance, and goal data into plain language for a parent-friendly conversation.</div>
+          </button>
+
+          <button class="aep-sug" aria-label="Create conference prep notes">
+            <div class="aep-sug-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="aep-sug-ttl">Create conference prep notes</div>
+            <div class="aep-sug-desc">Prepare strengths, focus areas, and SMART goal talking points before the meeting.</div>
+          </button>
+        </div>
+
+        <!-- Response panel (hidden until generated) -->
+        <div class="aep-resp-wrap" id="s3-aep-resp">
+          <button class="aep-resp-back" id="s3-resp-back" aria-label="Back to actions">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to actions
+          </button>
+          <div class="aep-typing" id="s3-typing">
+            <span class="aep-typing-label">EdAI is drafting</span>
+            <div class="aep-typing-dots" aria-hidden="true">
+              <span class="aep-typing-dot"></span>
+              <span class="aep-typing-dot"></span>
+              <span class="aep-typing-dot"></span>
+            </div>
+          </div>
+          <div class="aep-resp-content" id="s3-resp-content">
+            <div class="aep-resp-meta">
+              <span class="aep-resp-meta-badge">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                EdAI
+              </span>
+              Based on Amara's data · Feb 26, 2026
+            </div>
+            <div class="aep-resp-section">
+              <div class="aep-resp-section-ttl">Opening <span style="font-weight:400;text-transform:none;letter-spacing:0">— 2 min</span></div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Welcome and thank parents for coming</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Quick overview: "We're here to celebrate Amara's strengths and align on next steps"</div>
+            </div>
+            <div class="aep-resp-section">
+              <div class="aep-resp-section-ttl">Strengths to share <span style="font-weight:400;text-transform:none;letter-spacing:0">— 5 min</span></div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span><strong>ELA: 89%</strong> and trending up — strong written expression</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Active participant in History and Science discussions</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Thrives in project-based formats</div>
+            </div>
+            <div class="aep-resp-section">
+              <div class="aep-resp-section-ttl">Areas to address <span style="font-weight:400;text-transform:none;letter-spacing:0">— 8 min</span></div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span><strong>Math dropped to 71%</strong> — algebraic reasoning is the gap, suggest tutoring 2x/week</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span><strong>3 missing assignments</strong> in 14 days — pattern started mid-January, ask parents about home context</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Attendance at 91% — 1pp dip, worth monitoring</div>
+            </div>
+            <div class="aep-resp-section">
+              <div class="aep-resp-section-ttl">SMART goals to review <span style="font-weight:400;text-transform:none;letter-spacing:0">— 5 min</span></div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Math from 71% → 78% by March 15</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>All assignments on time for 30 days</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Family weekly progress review + sign-off</div>
+            </div>
+            <div class="aep-resp-section">
+              <div class="aep-resp-section-ttl">Closing <span style="font-weight:400;text-transform:none;letter-spacing:0">— 2 min</span></div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Confirm next steps and owners</div>
+              <div class="aep-resp-item"><span class="aep-resp-dot"></span>Schedule a 2-week follow-up check-in</div>
+            </div>
+            <p style="font-size:9px;color:var(--text-3);line-height:1.6;margin-top:4px">Generated by EdAI using Amara's assessment data. Review before use.</p>
+          </div>
+          <div class="aep-resp-actions" id="s3-resp-actions" style="display:none">
+            <button class="aep-resp-btn copy" id="s3-copy-btn" aria-label="Copy agenda">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+            <button class="aep-resp-btn regen" aria-label="Regenerate agenda">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.79"/></svg>
+              Regenerate
+            </button>
+          </div>
+        </div>
+
+        <div class="aep-foot" id="s3-aep-foot">
+          <div class="aep-input-wrap">
+            <span class="aep-hint">What would you like to do?</span>
+            <div class="aep-pacts">
+              <div class="aep-actions">
+                <button class="aep-act" aria-label="Generate content">Generate</button>
+                <button class="aep-act" aria-label="Summarise content">Summarise</button>
+                <button class="aep-act" aria-label="Draft meeting notes">Draft notes</button>
+              </div>
+              <button class="aep-send" aria-label="Send message">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+          <p class="aep-disc">EdAI can make mistakes. Double check important info.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4 ════════════════════════════════════════════════════════ -->
+<div id="s4" class="screen">
+
+  <nav class="app-sidebar" aria-label="Main navigation">
+    <div class="sidebar-logo" aria-hidden="true"><svg viewBox="0 0 36 36" width="28" height="28" fill="none"><circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/><path d="M11 10 L11 26 M11 18 L18 18 M11 10 L22 10 M11 26 L22 26" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="sidebar-nav">
+      <button class="sidebar-btn" aria-label="Dashboard"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+      <button class="sidebar-btn on" aria-label="Students" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+      <button class="sidebar-btn" aria-label="Analytics"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
+      <button class="sidebar-btn" aria-label="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="sidebar-btn" aria-label="Academic programs"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></button>
+    </div>
+    <button class="sidebar-fab" aria-label="New action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </nav>
+
+  <div class="app-main">
+    <header class="app-header">
+      <span class="hdr-greeting">Welcome, Lin!</span>
+      <div class="hdr-right">
+        <div class="hdr-search" role="search"><span>Search</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="hdr-avatar" aria-label="User: Lin Rivera">LR</div>
+        <button class="hdr-school" aria-label="Current school: Innovare">Innovare <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </header>
+
+    <div class="detail-area">
+      <div class="detail-left">
+
+        <div class="s3-phead">
+          <nav aria-label="Breadcrumb">
+            <ol class="breadcrumb">
+              <li><button onclick="go('s2')" aria-label="Back to Students list">Students</button></li>
+              <li aria-current="page">Amara Johnson</li>
+            </ol>
+          </nav>
+          <div class="s3-title-row">
+            <div style="display:flex;align-items:center;gap:10px">
+              <h1 class="s3-title">Amara Johnson</h1>
+              <span class="badge b-amber">Needs attention</span>
+            </div>
+            <div class="s3-title-acts">
+              <button class="btn-gen" style="background:var(--surface);color:var(--text-2);border:1px solid var(--border)" onclick="go('s3')" aria-label="Back to Prepare view">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                Back to Prepare
+              </button>
+            </div>
+          </div>
+          <p class="s3-meta">8th Grade &nbsp;·&nbsp; Room 214 &nbsp;·&nbsp; STU-20487</p>
+        </div>
+
+        <nav class="tab-bar" aria-label="Student sections">
+          <button class="tab" aria-selected="false" onclick="go('s3')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Prepare
+          </button>
+          <button class="tab" aria-selected="false">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            In Conference
+          </button>
+          <button class="tab" aria-selected="false">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Message
+          </button>
+          <button class="tab on" aria-selected="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Generate Report
+          </button>
+        </nav>
+
+        <main class="detail-scroll" aria-label="Generated conference report">
+
+          <!-- snapshot -->
+          <section aria-label="Performance snapshot">
+            <div class="snap-hdr">
+              <div class="snap-lbl">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Snapshot
+              </div>
+              <span class="snap-date">Last updated: Feb 26, 2026</span>
+            </div>
+            <div class="metric-grid">
+              <div class="mc hl"><div class="mc-lbl">Current GPA</div><div class="mc-val">2.8</div></div>
+              <div class="mc"><div class="mc-lbl">Attendance</div><div class="mc-val">91%</div><div class="mc-trend t-dn" aria-label="Down 1pp vs previous"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 11 12 6 17 11"/><line x1="12" y1="6" x2="12" y2="18"/></svg>-1pp vs prev</div></div>
+              <div class="mc"><div class="mc-lbl">Missing (14d)</div><div class="mc-val">3</div><div class="mc-trend t-up" aria-label="Up 3 vs previous"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="18" x2="12" y2="6"/></svg>+3 vs prev</div></div>
+            </div>
+          </section>
+
+          <!-- roadmap card -->
+          <div class="road-card" aria-label="Conference roadmap generated by EdAI">
+            <div class="road-hdr">
+              <div class="road-hdr-top">
+                <div>
+                  <div class="road-name">Amara Johnson</div>
+                  <div class="road-grade">8th Grade · Room 214</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:12px;color:rgba(255,255,255,.55)">Powered by</span>
+                  <span style="font-family:'Lato',sans-serif;font-size:14px;font-weight:900;background:linear-gradient(135deg,#00b0a8,#007dc5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">EdAI</span>
+                </div>
+              </div>
+              <div class="road-stats">
+                <div class="road-stat"><strong>2.8</strong> GPA <span class="road-sb">-0.3 vs last semester</span></div>
+                <div class="road-stat"><strong>91%</strong> Attendance</div>
+                <div class="road-stat"><strong>3</strong> Missing assignments</div>
+              </div>
+            </div>
+            <div class="road-body">
+              <p class="road-gen">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Generated by EdAI using Amara's uploaded assessment data · Feb 26, 2026
+              </p>
+              <div class="road-cols">
+                <div>
+                  <div class="road-col-ttl">Strengths</div>
+                  <div class="road-item"><span class="dg" aria-hidden="true"></span>Strong ELA performance — 89% and improving, especially written expression</div>
+                  <div class="road-item"><span class="dg" aria-hidden="true"></span>Consistent class participation in History and Science discussion</div>
+                  <div class="road-item"><span class="dg" aria-hidden="true"></span>Responds well to project-based learning formats</div>
+                </div>
+                <div>
+                  <div class="road-col-ttl">Focus Areas</div>
+                  <div class="road-item"><span class="di" aria-hidden="true"></span>Math grade declined from 78% to 71% — algebraic reasoning is the bottleneck</div>
+                  <div class="road-item"><span class="di" aria-hidden="true"></span>3 missing assignments in 14 days — pattern started mid-January</div>
+                  <div class="road-item"><span class="di" aria-hidden="true"></span>Attendance dipped 1pp — monitor for further decline next marking period</div>
+                </div>
+              </div>
+              <div class="road-sec-ttl">SMART Goals for Conference</div>
+              <div class="sgoal"><span class="sgoal-n" aria-hidden="true">1</span>Amara will bring Math grade from 71% to 78% by March 15 by completing all missing assignments and attending two tutoring sessions per week.</div>
+              <div class="sgoal"><span class="sgoal-n" aria-hidden="true">2</span>Amara will submit all assignments on time for the next 30 days, tracked weekly by Ms. Rivera with a progress check-in every Friday.</div>
+              <div class="sgoal"><span class="sgoal-n" aria-hidden="true">3</span>Family will review the progress report together weekly and sign off before Monday each week through end of Q3.</div>
+              <p style="font-size:11px;color:var(--text-3);margin-top:14px;line-height:1.6">These recommendations were generated by EdAI using Amara's school assessment data. EdAI does not replace human judgement — review all recommendations for accuracy before the conference.</p>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+      <!-- Ask EdAI panel (S4) -->
+      <aside class="aep" aria-label="Ask EdAI">
+        <div class="aep-hdr">
+          <div class="aep-hdr-row">
+            <span class="aep-title">Ask EdAI</span>
+            <button class="aep-x" aria-label="Close Ask EdAI panel"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+        </div>
+        <div class="aep-tabs" role="tablist">
+          <button class="aep-tab on" role="tab" aria-selected="true">Actions</button>
+          <button class="aep-tab" role="tab" aria-selected="false">Research</button>
+          <button class="aep-tab" role="tab" aria-selected="false">History</button>
+        </div>
+        <div class="aep-body">
+          <button class="aep-sug" aria-label="Draft parent meeting agenda">
+            <div class="aep-sug-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="aep-sug-ttl">Draft parent meeting agenda</div>
+            <div class="aep-sug-desc">Generate a structured agenda and talking points for the upcoming parent conference.</div>
+          </button>
+          <button class="aep-sug" aria-label="Explain SMART goals in plain language">
+            <div class="aep-sug-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="aep-sug-ttl">Explain SMART goals plainly</div>
+            <div class="aep-sug-desc">Rewrite these goals in simple language a parent can understand and act on.</div>
+          </button>
+          <button class="aep-sug" aria-label="Suggest follow-up actions after conference">
+            <div class="aep-sug-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="aep-sug-ttl">Suggest follow-up actions</div>
+            <div class="aep-sug-desc">List next steps for the teacher, student, and family to take after the conference.</div>
+          </button>
+        </div>
+        <div class="aep-foot">
+          <div class="aep-input-wrap">
+            <span class="aep-hint">What would you like to do?</span>
+            <div class="aep-pacts">
+              <div class="aep-actions">
+                <button class="aep-act">Generate</button>
+                <button class="aep-act">Summarise</button>
+                <button class="aep-act">Draft notes</button>
+              </div>
+              <button class="aep-send" aria-label="Send message"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+            </div>
+          </div>
+          <p class="aep-disc">EdAI can make mistakes. Double check important info.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+
+  if (id === 's2') {
+    var load = document.getElementById('s2-load');
+    var grid = document.getElementById('s2-grid');
+    var sugBox = document.getElementById('sug-box');
+    load.classList.remove('out');
+    grid.classList.remove('show');
+    if (sugBox) sugBox.classList.remove('loaded');
+    // reset stagger styles
+    grid.querySelectorAll('.s2-suggested,.s2-browse-row,.s2-section-lbl,.s2-meta,.stu-card').forEach(function(el) {
+      el.style.opacity = '';
+      el.style.transform = '';
+      el.style.transition = '';
+    });
+    var sug = document.querySelector('.s2-suggested');
+    if (sug) sug.classList.remove('out');
+    setTimeout(function() {
+      load.classList.add('out');
+      setTimeout(function() {
+        grid.classList.add('show');
+        // staggered entrance animations
+        var animEls = grid.querySelectorAll('.s2-suggested,.s2-browse-row,.s2-section-lbl,.s2-meta,.stu-card');
+        animEls.forEach(function(el, i) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(14px)';
+          setTimeout(function() {
+            el.style.transition = 'opacity .38s ease, transform .38s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 60 + i * 75);
+        });
+        if (sugBox) {
+          setTimeout(function() {
+            sugBox.classList.add('loaded');
+            sugBox.querySelector('.sug-summary-wrap').removeAttribute('aria-hidden');
+            sugBox.querySelector('.sug-loading-wrap').setAttribute('aria-hidden', 'true');
+            setTimeout(function() {
+              var sug = document.querySelector('.s2-suggested');
+              if (sug) sug.classList.add('out');
+            }, 2800);
+          }, 1200);
+        }
+      }, 500);
+    }, 2600);
+  }
+
+  if (id === 's3') {
+    // Reset response panel state on every navigation to S3
+    var sugsWrap = document.getElementById('s3-aep-sugs');
+    var respWrap = document.getElementById('s3-aep-resp');
+    var foot = document.getElementById('s3-aep-foot');
+    if (sugsWrap) sugsWrap.style.display = '';
+    if (respWrap) { respWrap.classList.remove('active'); }
+    if (foot) foot.style.display = '';
+
+    var s3 = document.getElementById('s3');
+    var s3els = s3.querySelectorAll('.s3-phead, .tab-bar, .bcard, .about-card, .know-card, .mod-card, .aep');
+    s3els.forEach(function(el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      el.style.transition = '';
+    });
+    setTimeout(function() {
+      s3els.forEach(function(el, i) {
+        setTimeout(function() {
+          el.style.transition = 'opacity .35s ease, transform .35s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, i * 55);
+      });
+    }, 40);
+  }
+}
+
+// Ask EdAI — Draft parent meeting agenda
+document.addEventListener('DOMContentLoaded', function() {
+  var agendaBtn = document.getElementById('s3-sug-agenda');
+  var sugsWrap  = document.getElementById('s3-aep-sugs');
+  var respWrap  = document.getElementById('s3-aep-resp');
+  var foot      = document.getElementById('s3-aep-foot');
+  var typing    = document.getElementById('s3-typing');
+  var content   = document.getElementById('s3-resp-content');
+  var actions   = document.getElementById('s3-resp-actions');
+  var backBtn   = document.getElementById('s3-resp-back');
+  var copyBtn   = document.getElementById('s3-copy-btn');
+
+  if (!agendaBtn) return;
+
+  agendaBtn.addEventListener('click', function() {
+    // Hide suggestions + footer, show response panel
+    sugsWrap.style.display = 'none';
+    foot.style.display = 'none';
+    content.classList.remove('visible');
+    actions.style.display = 'none';
+    typing.style.display = 'flex';
+    respWrap.classList.add('active');
+
+    // After typing delay, fade in content
+    setTimeout(function() {
+      typing.style.display = 'none';
+      content.classList.add('visible');
+      setTimeout(function() {
+        actions.style.display = 'flex';
+      }, 300);
+    }, 1800);
+  });
+
+  // Back button
+  backBtn.addEventListener('click', function() {
+    respWrap.classList.remove('active');
+    sugsWrap.style.display = '';
+    foot.style.display = '';
+  });
+
+  // Copy button — flash "Copied!" feedback
+  copyBtn.addEventListener('click', function() {
+    var orig = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    copyBtn.style.color = 'var(--green)';
+    copyBtn.style.borderColor = 'var(--green)';
+    setTimeout(function() {
+      copyBtn.innerHTML = orig;
+      copyBtn.style.color = '';
+      copyBtn.style.borderColor = '';
+    }, 1800);
+  });
+});
+</script>
+</body>
+</html>
