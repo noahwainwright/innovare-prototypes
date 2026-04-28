@@ -51,7 +51,7 @@ const state = {
   filterOpen: false,
   settingsOpen: document.body.dataset.page === "settings",
   discardOpen: false,
-  selectedSection: document.body.dataset.page === "settings" ? "Users" : "Account",
+  selectedSection: "Account",
   betaExpanded: true,
   footerState: "nochanges",
   defaultAccountId: 1,
@@ -74,6 +74,10 @@ const icons = {
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 1 9l11 6 9-4.91V17h2V9L12 3Zm0 14.2L5 13.38V17l7 4 7-4v-3.62l-7 3.82Z"/></svg>',
   gear:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m19.43 12.98.04-.98-.04-.98 2.11-1.65-2-3.46-2.49 1a7.03 7.03 0 0 0-1.69-.98L15 2h-4l-.36 2.93c-.6.23-1.17.56-1.69.98l-2.49-1-2 3.46 2.11 1.65-.04.98.04.98-2.11 1.65 2 3.46 2.49-1c.52.42 1.09.75 1.69.98L11 22h4l.36-2.93c.6-.23 1.17-.56 1.69-.98l2.49 1 2-3.46-2.11-1.65ZM13 15.5A3.5 3.5 0 1 1 13 8a3.5 3.5 0 0 1 0 7.5Z"/></svg>',
+  check:
+    '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.05 14.35-4.1-4.1 1.4-1.4 2.7 2.69 5.8-5.79 1.4 1.4-7.2 7.2Z"/></svg>',
+  error:
+    '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11 15h2v2h-2v-2Zm0-8h2v6h-2V7Zm1-5a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/></svg>',
   person:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z"/></svg>',
   close:
@@ -322,13 +326,13 @@ function renderSettingsModal() {
         </div>
         <nav class="settings-nav" aria-label="Account settings">
           ${renderNavItem("Account", icons.users)}
+          ${renderNavItem("Users", icons.users)}
           ${renderNavItem("Subscriptions", icons.payments)}
           ${renderNavItem("Permissions", icons.lock)}
           ${renderNavItem("Usage Limits", icons.timeline)}
           ${renderNavItem("Beta Features", icons.lightbulb, true)}
           ${state.betaExpanded ? renderNavItem("MTSS FOT Features", "", false, true) : ""}
           ${state.betaExpanded ? renderNavItem("CIWP & Goals", "", false, true) : ""}
-          ${renderNavItem("Users", icons.users)}
         </nav>
       </aside>
       <section class="settings-main">
@@ -510,7 +514,7 @@ function renderBanners() {
     .map(
       (banner) => `
         <div class="banner ${banner.kind}" data-id="${banner.id}">
-          <span>${escapeHtml(banner.text)}</span>
+          <span class="banner-content">${banner.kind === "error" ? icons.error : icons.check}<span>${escapeHtml(banner.text)}</span></span>
           <button class="icon-button" data-action="dismiss-banner" data-id="${banner.id}" aria-label="Dismiss">${icons.close}</button>
         </div>
       `,
@@ -623,7 +627,7 @@ function handleAction(event) {
       const account = accounts.find((item) => item.id === id);
       if (account) state.selectedAccountName = account.name;
       state.settingsOpen = true;
-      state.selectedSection = "Users";
+      state.selectedSection = "Account";
       state.betaExpanded = true;
       break;
     }

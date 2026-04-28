@@ -27,6 +27,10 @@
   --green-avatar: #21846d;
   --purple-avatar: #6a3f93;
   --blue-avatar: #4b6f98;
+  --banner-success-bg: #e6f8d3;
+  --banner-success-text: #68b01c;
+  --banner-error-bg: #fdced8;
+  --banner-shadow: #00000029;
   --shadow-modal: 0 4px 20px rgba(0, 0, 0, 0.1);
   --shadow-panel: 0 4px 2px rgba(0, 0, 0, 0.25);
   --overlay: rgba(0, 0, 0, 0.42);
@@ -712,38 +716,53 @@ button {
 
 .banner-stack {
   position: fixed;
-  left: 50%;
-  top: 68px;
+  left: calc(50% + 40px);
+  top: 40px;
   transform: translateX(-50%);
   z-index: 80;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: min(560px, calc(100vw - 40px));
+  width: min(875px, 70vw);
 }
 
 .banner {
-  min-height: 42px;
+  height: 49px;
   border-radius: 6px;
-  background: var(--neutral-100);
-  border-left: 4px solid var(--tertiary-500);
-  box-shadow: var(--shadow-modal);
+  background: var(--banner-success-bg);
+  box-shadow: 0 3px 6px var(--banner-shadow);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 12px;
-  color: var(--primary-500);
-  font-size: 14px;
-  font-weight: 700;
+  padding: 0 12px;
+  color: var(--banner-success-text);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 15px;
 }
 
 .banner.error {
-  border-left-color: var(--error-400);
+  background: var(--banner-error-bg);
+  color: var(--error-500);
 }
 
 .banner.success {
-  border-left-color: var(--success-500);
+  background: var(--banner-success-bg);
+  color: var(--banner-success-text);
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.banner .icon-button {
+  color: currentColor;
+  width: 28px;
+  height: 28px;
 }
 
 .settings-modal {
