@@ -54,6 +54,7 @@ const state = {
   animateSettings: document.body.dataset.page === "settings",
   discardOpen: false,
   selectedSection: "Account",
+  creatingAccount: false,
   betaExpanded: true,
   footerState: "nochanges",
   defaultAccountId: 1,
@@ -92,6 +93,8 @@ const icons = {
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m7 10 5 5 5-5H7Z"/></svg>',
   up:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m7 14 5-5 5 5H7Z"/></svg>',
+  add:
+    '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>',
   edit:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41L18.2 3.29a1 1 0 0 0-1.41 0l-1.96 1.96L18.58 9l2.13-1.79Z"/></svg>',
   spinner:
@@ -266,7 +269,13 @@ function renderSwitchModal() {
             <button class="apply-button" data-action="toggle-filter">Apply</button>
           </div>
         </div>
-        <p class="accounts-title">Accounts</p>
+        <div class="accounts-heading">
+          <p class="accounts-title">Accounts</p>
+          <button class="create-account-button has-tooltip" data-action="open-create-account" aria-label="Create new account">
+            ${icons.add}
+            <span class="repo-tooltip" role="tooltip">create new account</span>
+          </button>
+        </div>
         ${renderAccountState()}
       </div>
     </section>
@@ -323,19 +332,21 @@ function renderAccountRow(account) {
 }
 
 function renderSettingsModal() {
+  const accountCardTitle = state.creatingAccount ? "New Account" : state.selectedAccountName;
+  const accountCardSub = state.creatingAccount ? "Account: New" : "Account: School";
+  const accountInitials = state.creatingAccount ? "NA" : getInitials(state.selectedAccountName);
   return `
     <section class="modal settings-modal ${state.animateSettings ? "modal-enter" : ""}" role="dialog" aria-labelledby="settings-title">
       <aside class="settings-sidebar">
         <div class="account-card">
-          <div class="avatar-lg">CH</div>
+          <div class="avatar-lg">${accountInitials}</div>
           <div>
-            <div class="account-card-title">${escapeHtml(state.selectedAccountName)}</div>
-            <div class="account-card-sub">Account: School</div>
+            <div class="account-card-title">${escapeHtml(accountCardTitle)}</div>
+            <div class="account-card-sub">${escapeHtml(accountCardSub)}</div>
           </div>
         </div>
         <nav class="settings-nav" aria-label="Account settings">
           ${renderNavItem("Account", icons.users)}
-          ${renderNavItem("Users", icons.users)}
           ${renderNavItem("Subscriptions", icons.payments)}
           ${renderNavItem("Permissions", icons.lock)}
           ${renderNavItem("Usage Limits", icons.timeline)}
@@ -389,14 +400,24 @@ function renderSettingsContent() {
       return renderBetaFeatures("MTSS FOT Features");
     case "CIWP & Goals":
       return renderBetaFeatures("CIWP & Goals");
-    case "Users":
-      return renderUsersPlaceholder();
     default:
       return renderAccountSettings();
   }
 }
 
 function renderAccountSettings() {
+  if (state.creatingAccount) {
+    return `
+      <div class="form-stack">
+        ${field("Display Name", "")}
+        ${field("Account Type", "Select Account Type", true)}
+        ${field("Owner's Email", "")}
+        ${field("Select Grade Level", "Select Grade Level", true)}
+        ${field("CPS Account", "Select", true)}
+      </div>
+    `;
+  }
+
   return `
     <div class="form-stack">
       ${field("Display Name", state.selectedAccountName)}
@@ -474,22 +495,7 @@ function renderBetaFeatures(title) {
   `;
 }
 
-function renderUsersPlaceholder() {
-  return `
-    <div class="settings-placeholder">
-      <div class="pending-label">PENDING Q3</div>
-      <div class="placeholder-title">Users tab coming soon. API endpoint in progress.</div>
-      <div class="placeholder-copy">${COPY.userListEmpty}</div>
-      <div class="route-assumption">ASSUMES ROUTE CHANGE - pending Q4</div>
-    </div>
-  `;
-}
-
 function renderSettingsFooter() {
-  if (state.selectedSection === "Users") {
-    return '<footer class="settings-footer"></footer>';
-  }
-
   const pending = state.footerState === "pending";
   const saving = state.footerState === "saving";
   const label = pending ? COPY.pendingChanges : saving ? COPY.saving : "";
@@ -556,7 +562,6 @@ function renderStateDock() {
         <div class="state-panel-title" style="margin-top:10px">Account Settings</div>
         <div class="state-grid">
           <button class="state-chip" data-action="open-settings">Open settings</button>
-          <button class="state-chip" data-action="select-section" data-section="Users">Users tab</button>
           ${footerStates.map(([id, label]) => `<button class="state-chip ${state.footerState === id ? "active" : ""}" data-action="footer-state" data-state="${id}">${label}</button>`).join("")}
         </div>
       </div>
@@ -584,7 +589,7 @@ function handleAction(event) {
   const section = event.currentTarget.dataset.section;
   const nextState = event.currentTarget.dataset.state;
 
-  if (action === "set-default" || action === "default-already" || action === "open-settings") {
+  if (action === "set-default" || action === "default-already" || action === "open-settings" || action === "open-create-account") {
     event.stopPropagation();
   }
 
@@ -635,6 +640,7 @@ function handleAction(event) {
     case "open-settings": {
       const account = accounts.find((item) => item.id === id);
       if (account) state.selectedAccountName = account.name;
+      state.creatingAccount = false;
       state.settingsOpen = false;
       state.openingAccountId = account?.id || id || 0;
       state.animateSettings = true;
@@ -651,6 +657,15 @@ function handleAction(event) {
       }, 420);
       return;
     }
+    case "open-create-account":
+      state.creatingAccount = true;
+      state.selectedSection = "Account";
+      state.selectedAccountName = "";
+      state.footerState = "nochanges";
+      state.betaExpanded = true;
+      state.animateSettings = true;
+      state.settingsOpen = true;
+      break;
     case "select-section":
       state.selectedSection = section;
       break;
@@ -712,7 +727,6 @@ function handleAction(event) {
         state.footerState = "nochanges";
       } else {
         state.settingsOpen = true;
-        state.selectedSection = state.selectedSection === "Users" ? "Account" : state.selectedSection;
       }
       break;
     default:
@@ -737,6 +751,12 @@ function addBanner(text, kind = "success") {
       kind,
     },
   ].slice(-3);
+}
+
+function getInitials(value) {
+  const cleaned = String(value || "").trim();
+  if (!cleaned) return "UK";
+  return cleaned.slice(0, 2).toUpperCase();
 }
 
 function escapeHtml(value) {
