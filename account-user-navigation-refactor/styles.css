@@ -648,6 +648,10 @@ button {
   padding: 0;
 }
 
+.account-action.default-action {
+  color: var(--tertiary-500);
+}
+
 .default-badge {
   color: var(--tertiary-500);
   font-size: 14px;
@@ -714,6 +718,32 @@ button {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes modalLoadIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px)) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes dimFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .banner-stack {
   position: fixed;
   left: calc(50% + 40px);
@@ -773,6 +803,7 @@ button {
   border-radius: 10px;
   z-index: 50;
   box-shadow: var(--shadow-panel);
+  animation: modalLoadIn 180ms ease-out both;
 }
 
 .settings-dim {
@@ -780,6 +811,33 @@ button {
   inset: 0;
   background: var(--overlay-stacked);
   z-index: 45;
+  animation: dimFadeIn 140ms ease-out both;
+}
+
+.settings-loader-modal {
+  width: 236px;
+  height: 96px;
+  border-radius: 8px;
+  z-index: 50;
+  background: var(--neutral-100);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--primary-500);
+  font-size: 14px;
+  font-weight: 700;
+  animation: modalLoadIn 160ms ease-out both;
+}
+
+.loader-ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--neutral-400);
+  border-top-color: var(--tertiary-500);
+  animation: spin 700ms linear infinite;
 }
 
 .settings-sidebar {

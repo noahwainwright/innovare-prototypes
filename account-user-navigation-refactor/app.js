@@ -50,6 +50,7 @@ const state = {
   search: "",
   filterOpen: false,
   settingsOpen: document.body.dataset.page === "settings",
+  settingsLoading: false,
   discardOpen: false,
   selectedSection: "Account",
   betaExpanded: true,
@@ -224,7 +225,8 @@ function renderOverlayStack() {
   return `
     ${switchVisible ? '<div class="overlay"></div>' : ""}
     ${switchVisible ? renderSwitchModal() : ""}
-    ${state.settingsOpen ? '<div class="settings-dim"></div>' : ""}
+    ${state.settingsOpen || state.settingsLoading ? '<div class="settings-dim"></div>' : ""}
+    ${state.settingsLoading ? renderSettingsLoader() : ""}
     ${state.settingsOpen ? renderSettingsModal() : ""}
     ${state.discardOpen ? renderDiscardModal() : ""}
   `;
@@ -343,6 +345,15 @@ function renderSettingsModal() {
         <div class="settings-content">${renderSettingsContent()}</div>
         ${renderSettingsFooter()}
       </section>
+    </section>
+  `;
+}
+
+function renderSettingsLoader() {
+  return `
+    <section class="modal settings-loader-modal" role="status" aria-live="polite">
+      <span class="loader-ring"></span>
+      <span>Loading account settings...</span>
     </section>
   `;
 }
@@ -626,10 +637,17 @@ function handleAction(event) {
     case "open-settings": {
       const account = accounts.find((item) => item.id === id);
       if (account) state.selectedAccountName = account.name;
-      state.settingsOpen = true;
+      state.settingsOpen = false;
+      state.settingsLoading = true;
       state.selectedSection = "Account";
       state.betaExpanded = true;
-      break;
+      render();
+      window.setTimeout(() => {
+        state.settingsLoading = false;
+        state.settingsOpen = true;
+        render();
+      }, 420);
+      return;
     }
     case "select-section":
       state.selectedSection = section;
@@ -642,6 +660,7 @@ function handleAction(event) {
       if (state.footerState === "pending") {
         state.discardOpen = true;
       } else {
+        state.settingsLoading = false;
         state.settingsOpen = false;
       }
       break;
