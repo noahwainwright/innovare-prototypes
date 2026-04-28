@@ -434,33 +434,6 @@ button {
   background: var(--neutral-250);
 }
 
-.modal-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.add-account-button {
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
-  background: var(--primary-500);
-  color: var(--neutral-100);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  font-family: inherit;
-}
-
-.add-account-button:hover {
-  background: var(--primary-900);
-}
-
 .switch-body {
   height: calc(100% - 46px);
   padding: 12px;
@@ -707,6 +680,31 @@ button {
 .account-list::-webkit-scrollbar-thumb {
   background: var(--neutral-500);
   border-radius: 3px;
+}
+
+.load-more-footer {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 4px;
+}
+
+.load-more-button {
+  height: 28px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: var(--neutral-200);
+  color: var(--primary-500);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.load-more-button:hover {
+  background: var(--neutral-300);
 }
 
 .account-row {
