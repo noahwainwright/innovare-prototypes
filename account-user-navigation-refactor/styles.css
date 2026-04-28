@@ -803,6 +803,9 @@ button {
   border-radius: 10px;
   z-index: 50;
   box-shadow: var(--shadow-panel);
+}
+
+.settings-modal.modal-enter {
   animation: modalLoadIn 180ms ease-out both;
 }
 
@@ -811,32 +814,10 @@ button {
   inset: 0;
   background: var(--overlay-stacked);
   z-index: 45;
-  animation: dimFadeIn 140ms ease-out both;
 }
 
-.settings-loader-modal {
-  width: 236px;
-  height: 96px;
-  border-radius: 8px;
-  z-index: 50;
-  background: var(--neutral-100);
-  box-shadow: var(--shadow-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: var(--primary-500);
-  font-size: 14px;
-  font-weight: 700;
-  animation: modalLoadIn 160ms ease-out both;
-}
-
-.loader-ring {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid var(--neutral-400);
-  border-top-color: var(--tertiary-500);
+.spinner-icon {
+  color: var(--tertiary-500);
   animation: spin 700ms linear infinite;
 }
 
