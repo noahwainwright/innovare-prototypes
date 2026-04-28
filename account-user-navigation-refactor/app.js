@@ -95,7 +95,7 @@ const icons = {
   edit:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41L18.2 3.29a1 1 0 0 0-1.41 0l-1.96 1.96L18.58 9l2.13-1.79Z"/></svg>',
   spinner:
-    '<svg class="icon spinner-icon" width="16" height="16" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.05" y="1.05" width="14.7" height="14.7" rx="7.35" stroke="currentColor" stroke-width="2.1" opacity="0.25"/><path d="M1.05 8.4C1.05 12.4593 4.34071 15.75 8.4 15.75C12.4593 15.75 15.75 12.4593 15.75 8.4C15.75 4.34071 12.4593 1.05 8.4 1.05" stroke="currentColor" stroke-width="2.1"/></svg>',
+    '<svg class="icon spinner-icon" width="16" height="16" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.05" y="1.05" width="14.7" height="14.7" rx="7.35" stroke="var(--neutral-200)" stroke-width="2.1"/><path d="M1.05 8.4C1.05 12.4593 4.34071 15.75 8.4 15.75C12.4593 15.75 15.75 12.4593 15.75 8.4C15.75 4.34071 12.4593 1.05 8.4 1.05" stroke="var(--tertiary-500)" stroke-width="2.1"/></svg>',
   trash:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 4l1-1h6l1 1h4v2H4V4h4Z"/></svg>',
   transfer:
