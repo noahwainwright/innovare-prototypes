@@ -304,7 +304,11 @@ function renderSwitchModal() {
           <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Alphabetical</div>
           <div class="divider"></div>
           <div class="filter-section-title">Filter By</div>
-          <select class="state-select"><option>State</option></select>
+          <div class="radio-row"><span class="radio-dot"></span>All accounts</div>
+          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Trial</div>
+          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Paid</div>
+          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Inactive</div>
+          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Trash</div>
           <div class="filter-actions">
             <button class="link-button" data-action="clear-filter">Clear All</button>
             <button class="apply-button" data-action="toggle-filter">Apply</button>
