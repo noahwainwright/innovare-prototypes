@@ -91,7 +91,11 @@ const state = {
   nextCursor: null,
   loadingMore: false,
   searchTimer: null,
+  filterDropdownOpen: false,
+  filterStatuses: new Set(),
 };
+
+const FILTER_STATUS_OPTIONS = ["Trial", "Paid", "Inactive", "Trash"];
 
 const icons = {
   monitor:
@@ -304,11 +308,26 @@ function renderSwitchModal() {
           <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Alphabetical</div>
           <div class="divider"></div>
           <div class="filter-section-title">Filter By</div>
-          <div class="radio-row"><span class="radio-dot"></span>All accounts</div>
-          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Trial</div>
-          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Paid</div>
-          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Inactive</div>
-          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Trash</div>
+          <div class="filter-dropdown ${state.filterDropdownOpen ? "open" : ""}">
+            <button class="filter-dropdown-trigger" data-action="toggle-filter-dropdown" aria-expanded="${state.filterDropdownOpen}">
+              <span>${state.filterStatuses.size === 0 ? "All accounts" : [...state.filterStatuses].join(", ")}</span>
+              ${icons.down}
+            </button>
+            ${
+              state.filterDropdownOpen
+                ? `<div class="filter-dropdown-panel">
+                    ${FILTER_STATUS_OPTIONS.map(
+                      (status) => `
+                        <div class="checkbox-row" data-action="toggle-status-filter" data-status="${status}">
+                          <span class="checkbox-box ${state.filterStatuses.has(status) ? "checked" : ""}"></span>
+                          <span>${status}</span>
+                        </div>
+                      `,
+                    ).join("")}
+                  </div>`
+                : ""
+            }
+          </div>
           <div class="filter-actions">
             <button class="link-button" data-action="clear-filter">Clear All</button>
             <button class="apply-button" data-action="toggle-filter">Apply</button>
@@ -659,9 +678,21 @@ function handleAction(event) {
       break;
     case "toggle-filter":
       state.filterOpen = !state.filterOpen;
+      if (!state.filterOpen) state.filterDropdownOpen = false;
       break;
+    case "toggle-filter-dropdown":
+      state.filterDropdownOpen = !state.filterDropdownOpen;
+      break;
+    case "toggle-status-filter": {
+      const status = event.currentTarget.dataset.status;
+      if (state.filterStatuses.has(status)) state.filterStatuses.delete(status);
+      else state.filterStatuses.add(status);
+      break;
+    }
     case "clear-filter":
       state.filterOpen = false;
+      state.filterDropdownOpen = false;
+      state.filterStatuses = new Set();
       state.search = "";
       requestAccountPage({ reset: true });
       return;

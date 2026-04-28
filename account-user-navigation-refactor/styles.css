@@ -567,6 +567,107 @@ button {
   padding: 0 6px;
 }
 
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-dropdown-trigger {
+  width: 100%;
+  height: 30px;
+  border: 1px solid var(--tertiary-500);
+  border-radius: 4px;
+  background: var(--neutral-100);
+  color: var(--neutral-900);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.filter-dropdown-trigger > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  flex: 1;
+}
+
+.filter-dropdown-trigger .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--neutral-700);
+  transition: transform 120ms ease;
+}
+
+.filter-dropdown.open .filter-dropdown-trigger .icon {
+  transform: rotate(180deg);
+}
+
+.filter-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--neutral-100);
+  border: 1px solid var(--neutral-400);
+  border-radius: 4px;
+  box-shadow: var(--shadow-modal);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 5;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--primary-500);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkbox-row:hover {
+  background: var(--neutral-200);
+}
+
+.checkbox-box {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--neutral-700);
+  border-radius: 3px;
+  display: inline-block;
+  position: relative;
+  flex: 0 0 auto;
+  background: var(--neutral-100);
+}
+
+.checkbox-box.checked {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+}
+
+.checkbox-box.checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 4px;
+  height: 8px;
+  border-right: 2px solid var(--neutral-100);
+  border-bottom: 2px solid var(--neutral-100);
+  transform: rotate(45deg);
+}
+
 .filter-actions {
   display: flex;
   justify-content: space-between;
