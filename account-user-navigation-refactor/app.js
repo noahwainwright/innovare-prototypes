@@ -46,6 +46,10 @@ const accounts = [
   { id: 28, name: "Kennedy Middle", type: "School" },
   { id: 29, name: "Franklin High", type: "School" },
   { id: 30, name: "Oak Park District 97", type: "District" },
+  { id: 31, name: "Hamilton Elementary", type: "School" },
+  { id: 32, name: "Madison Elementary", type: "School" },
+  { id: 33, name: "Jefferson Elementary", type: "School" },
+  { id: 34, name: "Adams Elementary", type: "School" },
 ];
 
 const users = [
@@ -298,7 +302,7 @@ function renderSwitchModal() {
           <p class="accounts-title">Accounts</p>
           <button class="create-account-button has-tooltip" data-action="open-create-account" aria-label="Create new account">
             ${icons.add}
-            <span class="repo-tooltip" role="tooltip">create new account</span>
+            <span class="repo-tooltip" role="tooltip">Create New Account</span>
           </button>
         </div>
         ${renderAccountState()}
@@ -308,6 +312,14 @@ function renderSwitchModal() {
 }
 
 function renderAccountState() {
+  if (state.switchState === "loading" && state.search.trim().length >= 2) {
+    return `
+      <div class="search-loading" role="status" aria-label="Searching accounts">
+        <span class="search-spinner">${icons.spinner}</span>
+      </div>
+    `;
+  }
+
   if (state.switchState === "loading") {
     return `
       <div class="skeleton-list" aria-label="Loading accounts">
@@ -768,18 +780,18 @@ function handleAction(event) {
 
 const PAGE_SIZE = 5;
 const SEARCH_CAP = 25;
-const SEARCH_DELAY_MS = 250;
+const SEARCH_DELAY_MS = 3000;
 const SEARCH_DEBOUNCE_MS = 300;
 
 function fetchPage({ cursor, q }) {
   const trimmed = (q || "").trim().toLowerCase();
   const offset = Number(cursor) || 0;
   if (trimmed.length >= 2) {
-    const matches = accounts
-      .filter((account) => account.name.toLowerCase().includes(trimmed))
+    const elementary = accounts
+      .filter((account) => account.name.toLowerCase().includes("elementary"))
       .slice(0, SEARCH_CAP);
     return new Promise((resolve) => {
-      window.setTimeout(() => resolve({ items: matches, nextCursor: null }), SEARCH_DELAY_MS);
+      window.setTimeout(() => resolve({ items: elementary, nextCursor: null }), SEARCH_DELAY_MS);
     });
   }
   const slice = accounts.slice(offset, offset + PAGE_SIZE);
