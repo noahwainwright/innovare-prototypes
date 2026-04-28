@@ -143,6 +143,11 @@ const icons = {
 };
 
 function render() {
+  const active = document.activeElement;
+  const searchHadFocus = active && active.id === "account-search";
+  const selectionStart = searchHadFocus ? active.selectionStart : null;
+  const selectionEnd = searchHadFocus ? active.selectionEnd : null;
+
   document.getElementById("app").innerHTML = `
     <div class="app-shell">
       ${renderTopbar()}
@@ -154,9 +159,16 @@ function render() {
     ${renderStateDock()}
   `;
   bindEvents();
-  if (state.switchState === "loading") {
+  if (searchHadFocus || state.switchState === "loading") {
     const input = document.querySelector("#account-search");
-    if (input) input.focus();
+    if (input) {
+      input.focus();
+      if (selectionStart !== null) {
+        try {
+          input.setSelectionRange(selectionStart, selectionEnd);
+        } catch (err) {}
+      }
+    }
   }
   if (state.animateSettings) {
     window.setTimeout(() => {
