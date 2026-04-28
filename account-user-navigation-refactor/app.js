@@ -5,8 +5,7 @@ const COPY = {
   defaultSetBanner: "[Account name] is now your default account.",
   defaultAlreadySet: "[Account name] is already your default.",
   accountListError: "Couldn't load accounts. [Retry]",
-  searchEmpty:
-    "No accounts match '[query]'. Check spelling or try fewer characters.",
+  searchEmpty: "No accounts match '[query]'.",
   userListError: "Couldn't load users for this account. [Retry]",
   userListEmpty: "No users in this account yet.",
   roleSaved: "Saved",
@@ -15,17 +14,66 @@ const COPY = {
   saving: "Saving...",
 };
 
-const accounts = [
-  { id: 1, name: "Charter School Example", type: "School", isDefault: true },
-  { id: 2, name: "Makeshift School", type: "School" },
-  { id: 3, name: "test_trail", type: "District" },
-  { id: 4, name: "Test Northtown", type: "School" },
-  { id: 5, name: "Inno 3.0 Onboarding", type: "Other" },
-  { id: 6, name: "Flatfileupload Acc", type: "School" },
-  { id: 7, name: "Innovare Elementary", type: "School" },
-  { id: 8, name: "Oscar QA Account", type: "School" },
-  { id: 9, name: "Socorro Middle School", type: "School" },
+const accountNames = [
+  ["Charter School Example", "IL"],
+  ["Makeshift School", "IN"],
+  ["Chicago Public Schools", "IL"],
+  ["Lincoln Elementary", "IL"],
+  ["Washington High", "MI"],
+  ["Jefferson Middle", "WI"],
+  ["Springfield USD 186", "IL"],
+  ["Aurora West School District 129", "IL"],
+  ["Inno 3.0 Onboarding", "OH"],
+  ["Flatfileupload Acc", "KY"],
+  ["Innovare Elementary", "MN"],
+  ["Oscar QA Account", "IL"],
+  ["Socorro Middle School", "IN"],
+  ["Lincoln Elementary", "OH"],
+  ["Washington High", "IL"],
+  ["Jefferson Middle", "MI"],
+  ["Madison Metropolitan School District", "WI"],
+  ["Cleveland Heights-University Heights", "OH"],
+  ["Fort Wayne Community Schools", "IN"],
+  ["Minneapolis Public Schools", "MN"],
+  ["Louisville Jefferson County Schools", "KY"],
+  ["Grand Rapids Public Schools", "MI"],
+  ["Green Bay Area Public Schools", "WI"],
+  ["Peoria Public Schools", "IL"],
+  ["Kenosha Unified School District", "WI"],
+  ["Dayton Public Schools", "OH"],
+  ["South Bend Community Schools", "IN"],
+  ["Bloomington Public Schools", "MN"],
+  ["Lincoln Elementary", "WI"],
+  ["Washington High", "KY"],
+  ["Jefferson Middle", "OH"],
+  ["Roosevelt Elementary", "IL"],
+  ["Kennedy Middle", "IN"],
+  ["Franklin High", "MI"],
+  ["Hamilton Elementary", "WI"],
+  ["Monroe Middle", "KY"],
+  ["Adams High", "MN"],
+  ["Central Elementary", "OH"],
+  ["Northview School District", "MI"],
+  ["Westfield Community Schools", "IN"],
+  ["Oak Park District 97", "IL"],
+  ["Evanston Township High", "IL"],
+  ["Wauwatosa School District", "WI"],
+  ["Ann Arbor Public Schools", "MI"],
+  ["Cincinnati Public Schools", "OH"],
+  ["Rochester Public Schools", "MN"],
+  ["Lexington Public Schools", "KY"],
+  ["Gary Community School Corporation", "IN"],
+  ["Rockford Public Schools", "IL"],
+  ["Lincoln Elementary", "MN"],
 ];
+
+const accounts = accountNames.map(([name, stateCode], index) => ({
+  id: `acc_01HX2K8N3R4M5P6Q7S8T${String(index + 1).padStart(2, "0")}`,
+  name,
+  stateCode,
+  isDefault: index === 0,
+  lastAccessedAt: new Date(Date.UTC(2026, 3, 27 - Math.floor(index * 60 / accountNames.length), 14 - (index % 12), 22, 10)).toISOString(),
+}));
 
 const users = [
   ["hi@test.com", "MX-Charter-Account", "Owner", "774 days ago", "0", "SEND INVITE", "avatar-a", "HI"],
@@ -46,20 +94,32 @@ const users = [
 
 const state = {
   page: document.body.dataset.page || "switch",
-  switchState: "loaded",
+  switchState: "loading",
   search: "",
-  filterOpen: false,
+  debouncedSearch: "",
+  searchTimer: null,
+  queryRequestId: 0,
+  listItems: [],
+  nextCursor: null,
+  listLoading: true,
+  skeletonVisible: false,
+  loadingMore: false,
+  defaultSavingId: null,
   settingsOpen: document.body.dataset.page === "settings",
   openingAccountId: null,
   animateSettings: document.body.dataset.page === "settings",
   discardOpen: false,
   selectedSection: "Account",
-  creatingAccount: false,
   betaExpanded: true,
   footerState: "nochanges",
-  defaultAccountId: 1,
-  activeAccountId: 1,
+  userListState: "loaded",
+  roleSavingUserId: null,
+  roleSavedUserId: null,
+  roleErrorUserId: null,
+  defaultAccountId: accounts[0].id,
+  activeAccountId: accounts[0].id,
   selectedAccountName: "Charter School Example",
+  selectedAccountId: accounts[0].id,
   banners: [],
   statePanelOpen: false,
 };
@@ -89,12 +149,12 @@ const icons = {
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 3a6.5 6.5 0 0 1 5.17 10.44l4.44 4.45-1.42 1.41-4.44-4.44A6.5 6.5 0 1 1 9.5 3Zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z"/></svg>',
   filter:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5Z"/></svg>',
+  star:
+    '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.98 6.04 6.67.97-4.82 4.7 1.14 6.64L12 17.22l-5.97 3.13 1.14-6.64-4.82-4.7 6.67-.97L12 2Z"/></svg>',
   down:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m7 10 5 5 5-5H7Z"/></svg>',
   up:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="m7 14 5-5 5 5H7Z"/></svg>',
-  add:
-    '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>',
   edit:
     '<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Zm17.71-10.04a1 1 0 0 0 0-1.41L18.2 3.29a1 1 0 0 0-1.41 0l-1.96 1.96L18.58 9l2.13-1.79Z"/></svg>',
   spinner:
@@ -125,9 +185,9 @@ function render() {
     ${renderStateDock()}
   `;
   bindEvents();
-  if (state.switchState === "loading") {
+  if (!state.settingsOpen) {
     const input = document.querySelector("#account-search");
-    if (input) input.focus();
+    if (input) window.requestAnimationFrame(() => input.focus());
   }
   if (state.animateSettings) {
     window.setTimeout(() => {
@@ -247,34 +307,17 @@ function renderSwitchModal() {
     <section class="modal switch-modal" role="dialog" aria-labelledby="switch-account-title">
       <header class="modal-header">
         <h2 class="modal-title" id="switch-account-title">Switch Account</h2>
-        <button class="icon-button" data-action="close-switch" aria-label="Close">${icons.close}</button>
+        <div class="modal-header-actions">
+          <button class="add-account-button" data-action="add-account" aria-label="Add Account" title="Add Account">+</button>
+          <button class="icon-button" data-action="close-switch" aria-label="Close">${icons.close}</button>
+        </div>
       </header>
       <div class="switch-body">
-        <div class="search-filter-row">
+        <div class="search-row">
           <div class="search-box">
-            <input id="account-search" value="${escapeHtml(state.search)}" placeholder="Search Accounts..." data-action="search" />
+            <input id="account-search" value="${escapeHtml(state.search)}" placeholder="Search accounts" data-action="search" autocomplete="off" />
             <span class="search-icon">${state.search ? icons.close : icons.search}</span>
           </div>
-          <button class="filter-button" data-action="toggle-filter">${icons.filter}<span>Filter</span>${icons.down}</button>
-        </div>
-        <div class="filter-popover ${state.filterOpen ? "open" : ""}">
-          <div class="filter-section-title">Sort By</div>
-          <div class="radio-row"><span class="radio-dot"></span>Recently Viewed</div>
-          <div class="radio-row"><span class="radio-dot" style="--noop: 1"></span>Alphabetical</div>
-          <div class="divider"></div>
-          <div class="filter-section-title">Filter By</div>
-          <select class="state-select"><option>State</option></select>
-          <div class="filter-actions">
-            <button class="link-button" data-action="clear-filter">Clear All</button>
-            <button class="apply-button" data-action="toggle-filter">Apply</button>
-          </div>
-        </div>
-        <div class="accounts-heading">
-          <p class="accounts-title">Accounts</p>
-          <button class="create-account-button has-tooltip" data-action="open-create-account" aria-label="Create new account">
-            ${icons.add}
-            <span class="repo-tooltip" role="tooltip">create new account</span>
-          </button>
         </div>
         ${renderAccountState()}
       </div>
@@ -283,14 +326,14 @@ function renderSwitchModal() {
 }
 
 function renderAccountState() {
-  if (state.switchState === "loading") {
+  if (state.switchState === "loading" || state.skeletonVisible) {
     return `
       <div class="skeleton-list" aria-label="Loading accounts">
-        ${Array.from({ length: 5 })
+        ${Array.from({ length: 7 })
           .map(
             () => `
               <div class="skeleton-row">
-                <div class="skeleton-bar"></div>
+                <div class="skeleton-avatar"></div>
                 <div class="skeleton-bar"></div>
                 <div class="skeleton-bar"></div>
               </div>
@@ -305,14 +348,15 @@ function renderAccountState() {
     return `<div class="error-state">Couldn't load accounts. <button data-action="retry-accounts">[Retry]</button></div>`;
   }
 
-  const filtered = getFilteredAccounts();
-
-  if (!filtered.length) {
-    const query = state.search || "q";
+  if (!state.listItems.length) {
+    const query = state.debouncedSearch || state.search || "q";
     return `<div class="empty-state">${COPY.searchEmpty.replace("[query]", escapeHtml(query))}</div>`;
   }
 
-  return `<div class="account-list">${filtered.map(renderAccountRow).join("")}</div>`;
+  return `
+    <div class="account-list">${state.listItems.map(renderAccountRow).join("")}</div>
+    ${state.nextCursor ? `<div class="load-more-footer"><button class="load-more-button" data-action="load-more" aria-label="Load more">${state.loadingMore ? icons.spinner : "Load more"}</button></div>` : ""}
+  `;
 }
 
 function renderAccountRow(account) {
@@ -320,7 +364,11 @@ function renderAccountRow(account) {
   const current = account.id === state.activeAccountId;
   return `
     <div class="account-row ${current ? "current" : ""}" data-action="switch-account" data-id="${account.id}">
-      <div class="account-name">${escapeHtml(account.name)}</div>
+      <div class="account-avatar">${getInitials(account.name)}</div>
+      <div class="account-copy">
+        <div class="account-name">${escapeHtml(account.name)}${isDefault ? `<span class="default-star" aria-label="Default account">${icons.star}</span>` : ""}</div>
+        <div class="account-state">${escapeHtml(account.stateCode)}</div>
+      </div>
       ${
         isDefault
           ? `<button class="account-action default-action" data-action="default-already" data-id="${account.id}">${COPY.defaultBadge}</button>`
@@ -332,9 +380,9 @@ function renderAccountRow(account) {
 }
 
 function renderSettingsModal() {
-  const accountCardTitle = state.creatingAccount ? "New Account" : state.selectedAccountName;
-  const accountCardSub = state.creatingAccount ? "Account: New" : "Account: School";
-  const accountInitials = state.creatingAccount ? "NA" : getInitials(state.selectedAccountName);
+  const selectedAccount = accounts.find((account) => account.id === state.selectedAccountId);
+  const accountCardSub = `Account: ${selectedAccount?.stateCode || "IL"}`;
+  const accountInitials = getInitials(state.selectedAccountName);
   return `
     <section class="modal settings-modal ${state.animateSettings ? "modal-enter" : ""}" role="dialog" aria-labelledby="settings-title">
       <aside class="settings-sidebar">
@@ -353,6 +401,7 @@ function renderSettingsModal() {
           ${renderNavItem("Beta Features", icons.lightbulb, true)}
           ${state.betaExpanded ? renderNavItem("MTSS FOT Features", "", false, true) : ""}
           ${state.betaExpanded ? renderNavItem("CIWP & Goals", "", false, true) : ""}
+          ${renderNavItem("Users", icons.users)}
         </nav>
       </aside>
       <section class="settings-main">
@@ -400,24 +449,14 @@ function renderSettingsContent() {
       return renderBetaFeatures("MTSS FOT Features");
     case "CIWP & Goals":
       return renderBetaFeatures("CIWP & Goals");
+    case "Users":
+      return renderAccountUsers();
     default:
       return renderAccountSettings();
   }
 }
 
 function renderAccountSettings() {
-  if (state.creatingAccount) {
-    return `
-      <div class="form-stack">
-        ${field("Display Name", "")}
-        ${field("Account Type", "Select Account Type", true)}
-        ${field("Owner's Email", "")}
-        ${field("Select Grade Level", "Select Grade Level", true)}
-        ${field("CPS Account", "Select", true)}
-      </div>
-    `;
-  }
-
   return `
     <div class="form-stack">
       ${field("Display Name", state.selectedAccountName)}
@@ -495,7 +534,58 @@ function renderBetaFeatures(title) {
   `;
 }
 
+function renderAccountUsers() {
+  if (state.userListState === "loading") {
+    return `
+      <div class="settings-users-shell">
+        <div class="settings-user-skeleton">${Array.from({ length: 5 }).map(() => '<div class="settings-user-skeleton-row"></div>').join("")}</div>
+      </div>
+    `;
+  }
+
+  if (state.userListState === "error") {
+    return `<div class="settings-placeholder"><div class="placeholder-title">Couldn't load users for this account. <button class="inline-retry" data-action="retry-users">[Retry]</button></div></div>`;
+  }
+
+  const accountUsers = getAccountUsers();
+  if (!accountUsers.length || state.userListState === "empty") {
+    return `<div class="settings-placeholder"><div class="placeholder-title">${COPY.userListEmpty}</div></div>`;
+  }
+
+  return `
+    <div class="settings-users-shell">
+      <table class="settings-users-table" aria-label="Account users">
+        <thead>
+          <tr><th>Name</th><th>Role</th><th>Email</th><th></th></tr>
+        </thead>
+        <tbody>
+          ${accountUsers.map((user) => `
+            <tr>
+              <td><span class="settings-user-name"><span class="avatar-sm ${user.avatar}">${user.initials}</span>${escapeHtml(user.name)}</span></td>
+              <td>
+                <select class="role-select" data-action="change-role" data-id="${user.id}">
+                  ${["Super Admin", "Admin", "Editor", "Viewer"].map((role) => `<option ${user.role === role ? "selected" : ""}>${role}</option>`).join("")}
+                </select>
+              </td>
+              <td>${escapeHtml(user.email || "—")}</td>
+              <td class="role-status">
+                ${state.roleSavingUserId === user.id ? COPY.saving : ""}
+                ${state.roleSavedUserId === user.id ? COPY.roleSaved : ""}
+                ${state.roleErrorUserId === user.id ? `${COPY.roleSaveError}` : ""}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function renderSettingsFooter() {
+  if (state.selectedSection === "Users") {
+    return '<footer class="settings-footer"></footer>';
+  }
+
   const pending = state.footerState === "pending";
   const saving = state.footerState === "saving";
   const label = pending ? COPY.pendingChanges : saving ? COPY.saving : "";
@@ -577,47 +667,48 @@ function bindEvents() {
   if (search) {
     search.addEventListener("input", (event) => {
       state.search = event.target.value;
-      state.switchState = event.target.value.length ? "search" : "loaded";
+      scheduleAccountSearch();
       render();
     });
   }
+  document.querySelectorAll('select[data-action="change-role"]').forEach((node) => {
+    node.addEventListener("change", handleAction);
+  });
 }
 
 function handleAction(event) {
   const action = event.currentTarget.dataset.action;
-  const id = Number(event.currentTarget.dataset.id);
+  const id = event.currentTarget.dataset.id;
   const section = event.currentTarget.dataset.section;
   const nextState = event.currentTarget.dataset.state;
 
-  if (action === "set-default" || action === "default-already" || action === "open-settings" || action === "open-create-account") {
+  if (action === "set-default" || action === "default-already" || action === "open-settings") {
     event.stopPropagation();
   }
 
   switch (action) {
     case "open-switch":
       state.settingsOpen = false;
-      state.switchState = "loaded";
+      requestAccountPage({ reset: true, immediate: true });
       break;
     case "close-switch":
       addBanner("Switch Account remains available from the account pill.", "success");
       break;
-    case "toggle-filter":
-      state.filterOpen = !state.filterOpen;
-      break;
-    case "clear-filter":
-      state.filterOpen = false;
-      state.search = "";
-      state.switchState = "loaded";
+    case "add-account":
+      addBanner("Add Account flow coming soon.", "success");
       break;
     case "retry-accounts":
-      state.switchState = "loaded";
-      addBanner("Accounts loaded.", "success");
+      requestAccountPage({ reset: true, immediate: true });
       break;
+    case "load-more":
+      if (state.nextCursor && !state.loadingMore) requestAccountPage({ reset: false, cursor: state.nextCursor });
+      return;
     case "switch-account": {
       const account = accounts.find((item) => item.id === id);
       if (account) {
         state.activeAccountId = account.id;
         state.selectedAccountName = account.name;
+        state.selectedAccountId = account.id;
         addBanner(COPY.switchedBanner.replace("[Account name]", account.name), "success");
       }
       break;
@@ -626,7 +717,14 @@ function handleAction(event) {
       const account = accounts.find((item) => item.id === id);
       if (account) {
         state.defaultAccountId = account.id;
-        addBanner(COPY.defaultSetBanner.replace("[Account name]", account.name), "success");
+        state.defaultSavingId = account.id;
+        render();
+        window.setTimeout(() => {
+          state.defaultSavingId = null;
+          addBanner(COPY.defaultSetBanner.replace("[Account name]", account.name), "success");
+          render();
+        }, 450);
+        return;
       }
       break;
     }
@@ -639,8 +737,10 @@ function handleAction(event) {
     }
     case "open-settings": {
       const account = accounts.find((item) => item.id === id);
-      if (account) state.selectedAccountName = account.name;
-      state.creatingAccount = false;
+      if (account) {
+        state.selectedAccountName = account.name;
+        state.selectedAccountId = account.id;
+      }
       state.settingsOpen = false;
       state.openingAccountId = account?.id || id || 0;
       state.animateSettings = true;
@@ -657,15 +757,6 @@ function handleAction(event) {
       }, 420);
       return;
     }
-    case "open-create-account":
-      state.creatingAccount = true;
-      state.selectedSection = "Account";
-      state.selectedAccountName = "";
-      state.footerState = "nochanges";
-      state.betaExpanded = true;
-      state.animateSettings = true;
-      state.settingsOpen = true;
-      break;
     case "select-section":
       state.selectedSection = section;
       break;
@@ -729,10 +820,141 @@ function handleAction(event) {
         state.settingsOpen = true;
       }
       break;
+    case "users-state":
+      state.userListState = nextState;
+      state.selectedSection = "Users";
+      state.settingsOpen = true;
+      break;
+    case "retry-users":
+      state.userListState = "loaded";
+      break;
+    case "change-role": {
+      const userId = id;
+      state.roleSavingUserId = userId;
+      state.roleSavedUserId = null;
+      state.roleErrorUserId = null;
+      render();
+      window.setTimeout(() => {
+        state.roleSavingUserId = null;
+        state.roleSavedUserId = userId;
+        render();
+        window.setTimeout(() => {
+          state.roleSavedUserId = null;
+          render();
+        }, 2000);
+      }, 650);
+      return;
+    }
     default:
       break;
   }
   render();
+}
+
+const PAGE_SIZE = 10;
+const SEARCH_CAP = 25;
+const SEARCH_DELAY_MS = 250;
+const SKELETON_GRACE_MS = 150;
+const ERROR_GRACE_MS = 400;
+const SEARCH_DEBOUNCE_MS = 300;
+
+const recentSorted = [...accounts].sort(
+  (a, b) => new Date(b.lastAccessedAt).getTime() - new Date(a.lastAccessedAt).getTime(),
+);
+
+function encodeCursor(offset) {
+  return btoa(JSON.stringify({ offset }));
+}
+
+function decodeCursor(cursor) {
+  if (!cursor) return 0;
+  try {
+    return JSON.parse(atob(cursor)).offset || 0;
+  } catch (err) {
+    return 0;
+  }
+}
+
+function fetchPage({ cursor, q }) {
+  const trimmed = (q || "").trim().toLowerCase();
+  const offset = decodeCursor(cursor);
+  if (trimmed.length >= 2) {
+    const matches = recentSorted
+      .filter((account) => account.name.toLowerCase().includes(trimmed))
+      .slice(0, SEARCH_CAP);
+    return new Promise((resolve) => {
+      window.setTimeout(() => resolve({ items: matches, nextCursor: null }), SEARCH_DELAY_MS);
+    });
+  }
+  const slice = recentSorted.slice(offset, offset + PAGE_SIZE);
+  const nextOffset = offset + slice.length;
+  const nextCursor = nextOffset < recentSorted.length ? encodeCursor(nextOffset) : null;
+  return Promise.resolve({ items: slice, nextCursor });
+}
+
+function requestAccountPage({ reset = false, immediate = false, cursor = null, q } = {}) {
+  state.queryRequestId += 1;
+  const requestId = state.queryRequestId;
+  const query = typeof q === "string" ? q : state.debouncedSearch;
+
+  if (reset) {
+    state.switchState = "loading";
+    state.listItems = [];
+    state.nextCursor = null;
+    state.skeletonVisible = immediate;
+    if (!immediate) {
+      window.setTimeout(() => {
+        if (state.queryRequestId === requestId && state.switchState === "loading") {
+          state.skeletonVisible = true;
+          render();
+        }
+      }, SKELETON_GRACE_MS);
+    }
+  } else {
+    state.loadingMore = true;
+  }
+  render();
+
+  fetchPage({ cursor, q: query })
+    .then((response) => {
+      if (state.queryRequestId !== requestId) return;
+      const items = reset ? response.items : [...state.listItems, ...response.items];
+      state.listItems = items;
+      state.nextCursor = response.nextCursor;
+      state.skeletonVisible = false;
+      state.loadingMore = false;
+      state.switchState = items.length ? "loaded" : "empty";
+      state.debouncedSearch = query;
+      render();
+    })
+    .catch(() => {
+      if (state.queryRequestId !== requestId) return;
+      window.setTimeout(() => {
+        if (state.queryRequestId !== requestId) return;
+        state.switchState = "error";
+        state.skeletonVisible = false;
+        state.loadingMore = false;
+        render();
+      }, ERROR_GRACE_MS);
+    });
+}
+
+function scheduleAccountSearch() {
+  if (state.searchTimer) {
+    window.clearTimeout(state.searchTimer);
+    state.searchTimer = null;
+  }
+  const trimmed = state.search.trim();
+  if (trimmed.length === 0) {
+    state.debouncedSearch = "";
+    requestAccountPage({ reset: true, immediate: true, q: "" });
+    return;
+  }
+  if (trimmed.length < 2) return;
+  state.searchTimer = window.setTimeout(() => {
+    state.searchTimer = null;
+    requestAccountPage({ reset: true, q: trimmed });
+  }, SEARCH_DEBOUNCE_MS);
 }
 
 function getFilteredAccounts() {
@@ -768,4 +990,5 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+requestAccountPage({ reset: true, immediate: true });
 render();
